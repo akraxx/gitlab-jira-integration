@@ -11,11 +11,20 @@
 
     <artifactId>gitlab-jira-integration-application</artifactId>
 
+    <properties>
+        <retrofit.version>2.0.0-beta1</retrofit.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>fr.mmarie</groupId>
             <artifactId>gitlab-jira-integration-api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
