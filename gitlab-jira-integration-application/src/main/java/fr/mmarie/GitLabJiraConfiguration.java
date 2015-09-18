@@ -1,9 +1,15 @@
 package fr.mmarie;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.mmarie.jira.JiraConfiguration;
 import io.dropwizard.Configuration;
+import lombok.Getter;
 
-/**
- * Created by Maximilien on 17/09/2015.
- */
+import javax.validation.constraints.NotNull;
+
+@Getter
 public class GitLabJiraConfiguration extends Configuration {
+    @NotNull
+    @JsonProperty("jira")
+    private JiraConfiguration jiraConfiguration;
 }

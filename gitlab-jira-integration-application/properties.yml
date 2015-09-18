@@ -6,3 +6,8 @@ server:
   adminConnectors:
     - type: http
       port: 9091
+
+jira:
+  username: gitlab
+  password: gitlab
+  url: http://localhost:8090/
