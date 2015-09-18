@@ -3,6 +3,7 @@ package fr.mmarie.resources;
 import fr.mmarie.api.Event;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.Valid;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,7 +19,7 @@ public class HookResource {
 
     @POST
     public void hookPush(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
-                         Event event) {
+                         @Valid Event event) {
         log.info("<{}> Push hook received > {}", gitLabHeader, event);
     }
 

@@ -1,13 +1,18 @@
 package fr.mmarie.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.istack.internal.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
-@ToString
+@ToString(of = "type")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
 
     public enum Type {
@@ -30,6 +35,34 @@ public class Event {
     }
 
     @JsonProperty("object_kind")
+    @NotNull
     private Type type;
+
+    @JsonProperty("before")
+    private String before;
+
+    @JsonProperty("after")
+    private String after;
+
+    @JsonProperty("ref")
+    private String ref;
+
+    @JsonProperty("user_id")
+    private Long userId;
+
+    @JsonProperty("user_name")
+    private String userName;
+
+    @JsonProperty("user_email")
+    private String userEmail;
+
+    @JsonProperty("project_id")
+    private Long projectId;
+
+    @JsonProperty("repository")
+    private Repository repository;
+
+    @JsonProperty("commits")
+    private List<Commit> commits;
 
 }
