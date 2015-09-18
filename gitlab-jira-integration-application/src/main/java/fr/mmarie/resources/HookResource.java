@@ -1,5 +1,6 @@
 package fr.mmarie.resources;
 
+import fr.mmarie.api.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.HeaderParam;
@@ -16,9 +17,9 @@ public class HookResource {
     public static final String GITLAB_HEADER = "X-Gitlab-Event";
 
     @POST
-    @Path("/push")
     public void hookPush(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
-                         String body) {
-        log.info("<{}> Push hook received > {}", gitLabHeader, body);
+                         Event event) {
+        log.info("<{}> Push hook received > {}", gitLabHeader, event);
     }
+
 }
