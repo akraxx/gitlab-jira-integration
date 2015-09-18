@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 public class JiraConfiguration {
     @NotEmpty
     @NotNull
-    private String user;
+    private String username;
 
     @NotEmpty
     @NotNull
