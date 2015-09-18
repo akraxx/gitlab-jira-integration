@@ -27,6 +27,11 @@
             <version>${retrofit.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.squareup.retrofit</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>

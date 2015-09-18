@@ -1,10 +1,12 @@
 package fr.mmarie.jira;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
+@Getter
 public class JiraConfiguration {
     @NotEmpty
     @NotNull

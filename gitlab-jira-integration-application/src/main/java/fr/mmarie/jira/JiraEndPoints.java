@@ -7,6 +7,6 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 
 public interface JiraEndPoints {
-    @POST("/issue/${issue}/comment")
-    Call<Void> commentIssue(@Path("id") String issue, @Body Comment comment);
+    @POST("/rest/api/2/issue/{issue}/comment")
+    Call<Comment> commentIssue(@Path("issue") String issue, @Body Comment comment);
 }

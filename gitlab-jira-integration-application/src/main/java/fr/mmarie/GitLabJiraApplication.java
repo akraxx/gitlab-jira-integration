@@ -1,5 +1,6 @@
 package fr.mmarie;
 
+import fr.mmarie.jira.JiraService;
 import fr.mmarie.resources.HookResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
@@ -11,7 +12,7 @@ public class GitLabJiraApplication extends Application<GitLabJiraConfiguration> 
 
     @Override
     public void run(GitLabJiraConfiguration configuration, Environment environment) throws Exception {
-        environment.jersey().register(new HookResource());
+        environment.jersey().register(new HookResource(new JiraService(configuration.getJiraConfiguration())));
     }
 
     public static void main(String[] args) throws Exception {
