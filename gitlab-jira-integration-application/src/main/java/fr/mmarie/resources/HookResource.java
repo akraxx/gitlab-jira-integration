@@ -1,6 +1,6 @@
 package fr.mmarie.resources;
 
-import fr.mmarie.api.Event;
+import fr.mmarie.api.gitlab.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.Valid;

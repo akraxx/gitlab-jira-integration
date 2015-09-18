@@ -1,4 +1,4 @@
-package fr.mmarie.api;
+package fr.mmarie.api.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
