@@ -50,17 +50,7 @@ public class EventTest {
 
     @Test
     public void testToString() throws Exception {
-        final Event event = Event.builder()
-                .type(Event.Type.PUSH)
-                .before("95790bf891e76fee5e1747ab589903a6a1f80f22")
-                .after("da1560886d4f094c3e6c9ef40349f7d38b5d27d7")
-                .ref("refs/heads/master")
-                .userId(4L)
-                .userName("John Smith")
-                .userEmail("john@example.com")
-                .projectId(15L)
-                .totalCommitsCount(4L)
-                .build();
+        final Event event = new Event(Event.Type.PUSH);
 
         assertThat(event.toString()).isEqualTo("Event(type=PUSH)");
     }
