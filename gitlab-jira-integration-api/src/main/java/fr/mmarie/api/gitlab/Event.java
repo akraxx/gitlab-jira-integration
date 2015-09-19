@@ -17,22 +17,11 @@ import java.util.List;
 public class Event {
 
     public enum Type {
-        PUSH("push"),
-        TAG_PUSH("tag_push"),
-        ISSUE("issue"),
-        NOTE("note"),
-        MERGE_REQUEST("merge_request");
-
-        private String label;
-
-        Type(String label) {
-            this.label = label;
-        }
-
-        @Override
-        public String toString() {
-            return label;
-        }
+        PUSH,
+        TAG_PUSH,
+        ISSUE,
+        NOTE,
+        MERGE_REQUEST
     }
 
     @JsonProperty("object_kind")
