@@ -1,5 +1,6 @@
 package fr.mmarie.api.gitlab;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Commit {
     private String message;
 
     @JsonProperty("timestamp")
+    @JsonFormat(timezone = "CET")
     private Date timestamp;
 
     @JsonProperty("url")
