@@ -2,11 +2,11 @@ package fr.mmarie.api.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.internal.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data

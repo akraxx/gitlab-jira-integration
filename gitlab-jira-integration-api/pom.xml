@@ -17,6 +17,11 @@
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-validation</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
