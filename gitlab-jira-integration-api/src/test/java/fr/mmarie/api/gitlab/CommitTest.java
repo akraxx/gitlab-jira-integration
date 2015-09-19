@@ -19,7 +19,7 @@ public class CommitTest {
         final Commit commit = Commit.builder()
                 .id("b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327")
                 .message("Update Catalan translation to e38cb41.")
-                .timestamp(getDateFromString("2011-12-12 14:27:31"))
+                .timestamp(getDateFromString("2011-12-12T14:27:31+02:00"))
                 .url("http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327")
                 .build();
 
@@ -44,7 +44,7 @@ public class CommitTest {
         final Commit commit = Commit.builder()
                 .id("b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327")
                 .message("Update Catalan translation to e38cb41.")
-                .timestamp(getDateFromString("2011-12-12 14:27:31"))
+                .timestamp(getDateFromString("2011-12-12T14:27:31+02:00"))
                 .url("http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327")
                 .build();
 

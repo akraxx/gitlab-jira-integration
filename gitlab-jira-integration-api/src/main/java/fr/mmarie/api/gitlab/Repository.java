@@ -1,6 +1,8 @@
 package fr.mmarie.api.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -8,6 +10,8 @@ import lombok.ToString;
 @Data
 @ToString(of = "name")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Repository {
     @JsonProperty("name")
     private String name;

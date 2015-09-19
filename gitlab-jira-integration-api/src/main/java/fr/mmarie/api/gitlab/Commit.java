@@ -23,7 +23,6 @@ public class Commit {
     private String message;
 
     @JsonProperty("timestamp")
-    @JsonFormat(timezone = "CET")
     private Date timestamp;
 
     @JsonProperty("url")
