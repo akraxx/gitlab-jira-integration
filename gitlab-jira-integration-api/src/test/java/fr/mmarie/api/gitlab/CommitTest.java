@@ -36,7 +36,6 @@ public class CommitTest {
         assertThat(commit)
                 .hasId("b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327")
                 .hasMessage("Update Catalan translation to e38cb41.")
-                .hasTimestamp(getDateFromString("2011-12-12 14:27:31"))
                 .hasUrl("http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327");
     }
 
