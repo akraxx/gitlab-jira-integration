@@ -2,3 +2,5 @@ language: java
 script: mvn install
 jdk:
   - oraclejdk8
+after_success:
+  - mvn coveralls:report
