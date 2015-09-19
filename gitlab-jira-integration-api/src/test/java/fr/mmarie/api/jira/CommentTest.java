@@ -31,4 +31,10 @@ public class CommentTest {
         assertThat(comment).hasBody("This is a comment");
     }
 
+    @Test
+    public void testToString() throws Exception {
+        final Comment comment = new Comment("This is a comment");
+
+        assertThat(comment.toString()).isEqualTo("Comment(body=This is a comment)");
+    }
 }
