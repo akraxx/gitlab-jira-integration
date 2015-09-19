@@ -3,4 +3,4 @@ script: mvn jacoco:prepare-agent install
 jdk:
   - oraclejdk8
 after_success:
-  - mvn jacoco:report
+  - mvn jacoco:report coveralls:report
