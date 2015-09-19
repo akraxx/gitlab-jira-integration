@@ -1,6 +1,6 @@
 language: java
-script: mvn install
+script: mvn jacoco:prepare-agent install
 jdk:
   - oraclejdk8
 after_success:
-  - coveralls
+  - mvn jacoco:report

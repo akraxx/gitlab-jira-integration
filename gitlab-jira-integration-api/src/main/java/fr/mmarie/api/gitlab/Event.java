@@ -2,6 +2,7 @@ package fr.mmarie.api.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.annotations.VisibleForTesting;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -65,4 +66,8 @@ public class Event {
     @JsonProperty("commits")
     private List<Commit> commits;
 
+    @VisibleForTesting
+    public Event(Type type) {
+        this.type = type;
+    }
 }

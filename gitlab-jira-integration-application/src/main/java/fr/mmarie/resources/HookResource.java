@@ -9,9 +9,6 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-/**
- * Created by Maximilien on 17/09/2015.
- */
 @Path("/hook")
 @Slf4j
 public class HookResource {
@@ -25,7 +22,7 @@ public class HookResource {
     }
 
     @POST
-    public void hookPush(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
+    public void hook(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
                          @Valid Event event) {
         log.info("<{}> Push hook received > {}", gitLabHeader, event);
     }
