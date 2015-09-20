@@ -2,7 +2,6 @@ package fr.mmarie.resources;
 
 import fr.mmarie.api.gitlab.Event;
 import fr.mmarie.core.IntegrationService;
-import fr.mmarie.core.jira.JiraService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.Valid;

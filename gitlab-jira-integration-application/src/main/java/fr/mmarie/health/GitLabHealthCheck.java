@@ -2,7 +2,6 @@ package fr.mmarie.health;
 
 import com.codahale.metrics.health.HealthCheck;
 import fr.mmarie.core.gitlab.GitLabService;
-import fr.mmarie.core.jira.JiraService;
 
 import javax.ws.rs.core.Response;
 

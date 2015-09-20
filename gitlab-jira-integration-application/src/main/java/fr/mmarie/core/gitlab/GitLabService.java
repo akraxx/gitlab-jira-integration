@@ -1,7 +1,6 @@
 package fr.mmarie.core.gitlab;
 
 import com.google.common.collect.Lists;
-import com.squareup.okhttp.OkHttpClient;
 import fr.mmarie.api.gitlab.User;
 import lombok.NonNull;
 import retrofit.GsonConverterFactory;
