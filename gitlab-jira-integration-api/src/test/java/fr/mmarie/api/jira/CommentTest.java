@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static fr.mmarie.api.jira.Assertions.assertThat;
+import static fr.mmarie.api.jira.CommentAssert.assertThat;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 

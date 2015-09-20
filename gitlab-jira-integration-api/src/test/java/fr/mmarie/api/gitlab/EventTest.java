@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 
-import static fr.mmarie.api.jira.Assertions.assertThat;
+import static fr.mmarie.api.gitlab.EventAssert.assertThat;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 

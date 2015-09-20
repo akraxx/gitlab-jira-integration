@@ -6,7 +6,7 @@ import org.assertj.core.api.StrictAssertions;
 import org.junit.Test;
 
 import static fr.mmarie.api.Utils.getDateFromString;
-import static fr.mmarie.api.jira.Assertions.assertThat;
+import static fr.mmarie.api.gitlab.CommitAssert.assertThat;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 
