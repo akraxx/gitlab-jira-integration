@@ -40,6 +40,10 @@ public class JiraService {
                 .create(JiraEndPoints.class);
     }
 
+    public Response<Object> getIssue(String issue) throws IOException {
+        return jiraEndPoints.getIssue(issue).execute();
+    }
+
     public Response<Comment> commentIssue(String issue, Comment comment) throws IOException {
         return jiraEndPoints.commentIssue(issue, comment).execute();
     }

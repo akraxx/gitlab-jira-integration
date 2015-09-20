@@ -10,6 +10,9 @@ import retrofit.http.Path;
 import java.util.Map;
 
 public interface JiraEndPoints {
+    @GET("/rest/api/2/issue/{issue}")
+    Call<Object> getIssue(@Path("issue") String issue);
+
     @POST("/rest/api/2/issue/{issue}/comment")
     Call<Comment> commentIssue(@Path("issue") String issue, @Body Comment comment);
 

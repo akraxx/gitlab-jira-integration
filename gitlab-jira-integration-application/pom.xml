@@ -13,6 +13,9 @@
 
     <properties>
         <retrofit.version>2.0.0-beta1</retrofit.version>
+
+        <!--test-->
+        <wiremock.version>1.57</wiremock.version>
     </properties>
 
     <dependencies>
@@ -35,6 +38,13 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

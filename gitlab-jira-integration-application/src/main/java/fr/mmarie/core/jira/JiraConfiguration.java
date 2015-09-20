@@ -1,6 +1,7 @@
 package fr.mmarie.core.jira;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.annotations.VisibleForTesting;
 import lombok.Getter;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -22,4 +23,11 @@ public class JiraConfiguration {
     @NotNull
     @JsonProperty
     private String url;
+
+    @VisibleForTesting
+    public JiraConfiguration(String username, String password, String url) {
+        this.username = username;
+        this.password = password;
+        this.url = url;
+    }
 }
