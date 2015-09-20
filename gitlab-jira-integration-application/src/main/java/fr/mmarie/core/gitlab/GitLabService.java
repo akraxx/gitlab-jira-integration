@@ -23,10 +23,10 @@ public class GitLabService {
 
     private final GitLabEndPoints gitLabEndPoints;
 
-    private final String privateToken;
+    private final GitLabConfiguration gitLabConfiguration;
 
     public GitLabService(@NonNull GitLabConfiguration gitLabConfiguration) {
-        this.privateToken = gitLabConfiguration.getPrivateToken();
+        this.gitLabConfiguration = gitLabConfiguration;
         this.gitLabEndPoints = new Retrofit.Builder()
                 .baseUrl(gitLabConfiguration.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -35,11 +35,15 @@ public class GitLabService {
     }
 
     public Response<User> getUser(Long id) throws IOException {
-        return gitLabEndPoints.getUser(id, privateToken).execute();
+        return gitLabEndPoints.getUser(id, gitLabConfiguration.getPrivateToken()).execute();
     }
 
     public Response<User> getLoggedUser() throws IOException {
-        return gitLabEndPoints.getLoggedUser(privateToken).execute();
+        return gitLabEndPoints.getLoggedUser(gitLabConfiguration.getPrivateToken()).execute();
+    }
+
+    public String getUserUrl(String username) {
+        return gitLabConfiguration.getUrl().concat("/u/"+username);
     }
 
     /**

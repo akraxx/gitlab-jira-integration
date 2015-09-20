@@ -1,7 +1,7 @@
 package fr.mmarie.resources;
 
 import fr.mmarie.api.gitlab.Event;
-import fr.mmarie.core.jira.JiraService;
+import fr.mmarie.core.IntegrationService;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -14,11 +14,11 @@ import static org.mockito.Mockito.mock;
 
 public class HookResourceTestIT {
 
-    private static final JiraService JIRA_SERVICE = mock(JiraService.class);
+    private static final IntegrationService INTEGRATION_SERVICE = mock(IntegrationService.class);
 
     @ClassRule
     public static final ResourceTestRule resources = ResourceTestRule.builder()
-            .addResource(new HookResource(JIRA_SERVICE))
+            .addResource(new HookResource(INTEGRATION_SERVICE))
             .build();
 
     @Test

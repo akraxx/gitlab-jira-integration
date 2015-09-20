@@ -1,6 +1,7 @@
 package fr.mmarie.resources;
 
 import fr.mmarie.api.gitlab.Event;
+import fr.mmarie.core.IntegrationService;
 import fr.mmarie.core.jira.JiraService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,16 +16,21 @@ public class HookResource {
 
     public static final String GITLAB_HEADER = "X-Gitlab-Event";
 
-    private final JiraService jiraService;
+    private final IntegrationService service;
 
-    public HookResource(JiraService jiraService) {
-        this.jiraService = jiraService;
+    public HookResource(IntegrationService service) {
+        this.service = service;
     }
 
     @POST
     public void hook(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
                          @Valid Event event) {
         log.info("<{}> Push hook received > {}", gitLabHeader, event);
+        switch (event.getType()) {
+            case PUSH:
+                service.performPushEvent(event);
+                break;
+        }
     }
 
 }
