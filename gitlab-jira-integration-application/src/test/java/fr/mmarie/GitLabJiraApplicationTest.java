@@ -29,7 +29,7 @@ public class GitLabJiraApplicationTest {
             new DropwizardAppRule<>(GitLabJiraApplication.class, ResourceHelpers.resourceFilePath("properties-test.yml"));
 
     @Test
-    public void testHealthChecks() {
+    public void testHealthyJiraHealthChecks() {
         wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/serverInfo"))
                 .withHeader("Authorization", matching("Basic .*"))
                 .willReturn(aResponse()
@@ -51,6 +51,30 @@ public class GitLabJiraApplicationTest {
 
         wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
                 .withHeader("Authorization", matching("Basic .*")));
+    }
 
+    @Test
+    public void testUnhealthyJiraHealthChecks() {
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/serverInfo"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(500)
+                        .withBody("{}")));
+
+        Client client = ClientBuilder.newClient();
+
+        Response healthcheck = client.target(String.format("http://localhost:%d/", RULE.getAdminPort()))
+                .path("healthcheck")
+                .request()
+                .get();
+
+        assertThat(healthcheck.getStatus())
+                .isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+
+        assertThat(healthcheck.readEntity(String.class))
+                .contains("\"jira\":{\"healthy\":false,\"message\":\"Unable to contact JIRA server, HTTP code received <500>\"");
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
+                .withHeader("Authorization", matching("Basic .*")));
     }
 }
