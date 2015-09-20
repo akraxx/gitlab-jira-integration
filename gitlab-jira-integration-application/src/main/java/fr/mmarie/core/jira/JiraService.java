@@ -11,6 +11,7 @@ import retrofit.Retrofit;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Map;
 
 @Slf4j
 public class JiraService {
@@ -41,5 +42,9 @@ public class JiraService {
 
     public Response<Comment> commentIssue(String issue, Comment comment) throws IOException {
         return jiraEndPoints.commentIssue(issue, comment).execute();
+    }
+
+    public Response<Map<String, Object>> serverInfo() throws IOException {
+        return jiraEndPoints.serverInfo().execute();
     }
 }
