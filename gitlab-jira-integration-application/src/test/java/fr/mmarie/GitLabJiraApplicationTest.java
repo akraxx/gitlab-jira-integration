@@ -19,19 +19,29 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
 public class GitLabJiraApplicationTest {
-    public static final int PORT = 1338;
+    public static final int PORT_JIRA = 1338;
+    public static final int PORT_GITLAB = 1339;
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(PORT);
+    public WireMockRule wireMockRuleJira = new WireMockRule(PORT_JIRA);
+
+    @Rule
+    public WireMockRule wireMockRuleGitLab = new WireMockRule(PORT_GITLAB);
 
     @ClassRule
     public static final DropwizardAppRule<GitLabJiraConfiguration> RULE =
             new DropwizardAppRule<>(GitLabJiraApplication.class, ResourceHelpers.resourceFilePath("properties-test.yml"));
 
     @Test
-    public void testHealthyJiraHealthChecks() {
-        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/serverInfo"))
+    public void testHealthyHealthChecks() {
+        wireMockRuleJira.stubFor(get(urlEqualTo("/rest/api/2/serverInfo"))
                 .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{}")));
+
+        wireMockRuleGitLab.stubFor(get(urlEqualTo("/api/v3/user?private_token="
+                + RULE.getConfiguration().getGitLabConfiguration().getPrivateToken()))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody("{}")));
@@ -47,16 +57,26 @@ public class GitLabJiraApplicationTest {
                 .isEqualTo(Response.Status.OK.getStatusCode());
 
         assertThat(healthcheck.readEntity(String.class))
-                .contains("\"jira\":{\"healthy\":true,\"message\":\"Jira server has been contacted successfully\"");
+                .contains("\"jira\":{\"healthy\":true,\"message\":\"Jira server has been contacted successfully\"",
+                        "\"gitlab\":{\"healthy\":true,\"message\":\"GitLab server has been contacted successfully\"}");
 
-        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
+        wireMockRuleJira.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
                 .withHeader("Authorization", matching("Basic .*")));
+
+        wireMockRuleGitLab.verify(getRequestedFor(urlEqualTo("/api/v3/user?private_token="
+                + RULE.getConfiguration().getGitLabConfiguration().getPrivateToken())));
     }
 
     @Test
-    public void testUnhealthyJiraHealthChecks() {
-        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/serverInfo"))
+    public void testUnhealthyHealthChecks() {
+        wireMockRuleJira.stubFor(get(urlEqualTo("/rest/api/2/serverInfo"))
                 .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(500)
+                        .withBody("{}")));
+
+        wireMockRuleGitLab.stubFor(get(urlEqualTo("/api/v3/user?private_token="
+                + RULE.getConfiguration().getGitLabConfiguration().getPrivateToken()))
                 .willReturn(aResponse()
                         .withStatus(500)
                         .withBody("{}")));
@@ -72,9 +92,13 @@ public class GitLabJiraApplicationTest {
                 .isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
         assertThat(healthcheck.readEntity(String.class))
-                .contains("\"jira\":{\"healthy\":false,\"message\":\"Unable to contact JIRA server, HTTP code received <500>\"");
+                .contains("\"jira\":{\"healthy\":false,\"message\":\"Unable to contact JIRA server, HTTP code received <500>\"",
+                        "\"gitlab\":{\"healthy\":false,\"message\":\"Unable to contact GitLab server, HTTP code received <500>\"");
 
-        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
+        wireMockRuleJira.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
                 .withHeader("Authorization", matching("Basic .*")));
+
+        wireMockRuleGitLab.verify(getRequestedFor(urlEqualTo("/api/v3/user?private_token="
+                + RULE.getConfiguration().getGitLabConfiguration().getPrivateToken())));
     }
 }

@@ -11,4 +11,10 @@ public class GitLabJiraConfigurationTest {
         GitLabJiraConfiguration gitLabJiraConfiguration = new GitLabJiraConfiguration();
         assertThat(gitLabJiraConfiguration.getJiraConfiguration()).isNull();
     }
+
+    @Test
+    public void gitLabConfigurationShouldBeNullByDefault() {
+        GitLabJiraConfiguration gitLabJiraConfiguration = new GitLabJiraConfiguration();
+        assertThat(gitLabJiraConfiguration.getGitLabConfiguration()).isNull();
+    }
 }

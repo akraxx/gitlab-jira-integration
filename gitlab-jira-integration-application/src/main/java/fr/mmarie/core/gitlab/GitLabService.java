@@ -38,6 +38,10 @@ public class GitLabService {
         return gitLabEndPoints.getUser(id, privateToken).execute();
     }
 
+    public Response<User> getLoggedUser() throws IOException {
+        return gitLabEndPoints.getLoggedUser(privateToken).execute();
+    }
+
     /**
      * Extracts issues names from given {@code message}.
      *

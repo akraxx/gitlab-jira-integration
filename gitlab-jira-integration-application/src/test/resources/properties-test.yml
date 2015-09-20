@@ -11,3 +11,7 @@ jira:
   username: gitlab
   password: gitlab
   url: http://localhost:1338
+
+gitlab:
+  private_token: N1bJ4n8-rbFAEf8Syrh2
+  url: http://localhost:1339

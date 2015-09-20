@@ -1,6 +1,7 @@
 package fr.mmarie;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.mmarie.core.gitlab.GitLabConfiguration;
 import fr.mmarie.core.jira.JiraConfiguration;
 import io.dropwizard.Configuration;
 import lombok.Getter;
@@ -12,4 +13,8 @@ public class GitLabJiraConfiguration extends Configuration {
     @NotNull
     @JsonProperty("jira")
     private JiraConfiguration jiraConfiguration;
+
+    @NotNull
+    @JsonProperty("gitlab")
+    private GitLabConfiguration gitLabConfiguration;
 }

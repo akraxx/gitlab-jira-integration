@@ -59,6 +59,28 @@ public class GitLabServiceTestIT {
     }
 
     @Test
+    public void testGetLoggedUser() throws Exception {
+        String mockedUser = fixture("fixtures/gitlab/user.json");
+
+        wireMockRule.stubFor(get(urlEqualTo("/api/v3/user?private_token=" + privateToken))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(mockedUser)));
+
+        Response<User> response = gitLabService.getLoggedUser();
+
+        assertThat(response.code())
+                .isEqualTo(200);
+
+        assertThat(response.body())
+                .hasId(1L)
+                .hasUsername("john_smith")
+                .hasName("John Smith");
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/api/v3/user?private_token=" + privateToken)));
+    }
+
+    @Test
     public void extractIssuesFromMessageWithoutIssue() throws Exception {
         String message = "test: no issue";
 

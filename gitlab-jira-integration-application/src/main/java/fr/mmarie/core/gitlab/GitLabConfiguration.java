@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class GitLabConfiguration {
     @NotEmpty
     @NotNull
-    @JsonProperty
+    @JsonProperty("private_token")
     private String privateToken;
 
     @NotEmpty
