@@ -1,5 +1,6 @@
 package fr.mmarie.core.jira;
 
+import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import fr.mmarie.api.jira.Comment;
 import org.junit.Before;
@@ -98,6 +99,50 @@ public class JiraServiceTestIT {
                 .isEqualTo(200);
 
         wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/serverInfo"))
+                .withHeader("Authorization", matching("Basic .*")));
+    }
+
+    @Test
+    public void isExistingIssueWithAGoodOne() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{}")));
+
+        assertThat(jiraService.isExistingIssue(issue)).isTrue();
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue))
+                .withHeader("Authorization", matching("Basic .*")));
+    }
+
+    @Test
+    public void isExistingIssueWithABadOne() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(404)
+                        .withBody("{}")));
+
+        assertThat(jiraService.isExistingIssue(issue)).isFalse();
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue))
+                .withHeader("Authorization", matching("Basic .*")));
+    }
+
+    @Test
+    public void isExistingIssueWithAServerError() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withFault(Fault.EMPTY_RESPONSE)));
+
+        assertThat(jiraService.isExistingIssue(issue)).isFalse();
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue))
                 .withHeader("Authorization", matching("Basic .*")));
     }
 }

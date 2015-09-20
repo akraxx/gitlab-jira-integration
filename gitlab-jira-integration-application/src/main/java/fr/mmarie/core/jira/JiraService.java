@@ -51,4 +51,13 @@ public class JiraService {
     public Response<Map<String, Object>> serverInfo() throws IOException {
         return jiraEndPoints.serverInfo().execute();
     }
+
+    public boolean isExistingIssue(String issue) {
+        try {
+            return (getIssue(issue).code() == 200);
+        } catch (Exception e) {
+            log.error("Unable to get issue <{}>", issue, e);
+            return false;
+        }
+    }
 }
