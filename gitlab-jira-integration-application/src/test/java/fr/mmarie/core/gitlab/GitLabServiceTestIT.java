@@ -111,4 +111,12 @@ public class GitLabServiceTestIT {
                 .hasSize(2)
                 .containsExactly("TEST-1", "TEST-15289");
     }
+
+    @Test
+    public void getUserUrl() throws Exception {
+        String username = "akraxx";
+        String url = gitLabService.getUserUrl(username);
+
+        assertThat(url).isEqualTo(gitLabConfiguration.getUrl() + "/u/" + username);
+    }
 }

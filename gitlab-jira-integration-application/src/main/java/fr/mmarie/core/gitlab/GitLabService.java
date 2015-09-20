@@ -42,7 +42,11 @@ public class GitLabService {
     }
 
     public String getUserUrl(String username) {
-        return gitLabConfiguration.getUrl().concat("/u/"+username);
+        String baseUrl = gitLabConfiguration.getUrl();
+        if(!baseUrl.endsWith("/")) {
+            baseUrl = baseUrl+"/";
+        }
+        return baseUrl.concat("u/"+username);
     }
 
     /**
