@@ -1,0 +1,13 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 19090
+
+  adminConnectors:
+    - type: http
+      port: 19091
+
+jira:
+  username: gitlab
+  password: gitlab
+  url: http://localhost:1338

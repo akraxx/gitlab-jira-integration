@@ -6,9 +6,6 @@ import fr.mmarie.resources.HookResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
-/**
- * Created by Maximilien on 17/09/2015.
- */
 public class GitLabJiraApplication extends Application<GitLabJiraConfiguration> {
 
     @Override

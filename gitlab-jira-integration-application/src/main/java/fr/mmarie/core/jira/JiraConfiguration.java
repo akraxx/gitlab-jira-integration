@@ -3,11 +3,13 @@ package fr.mmarie.core.jira;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
+@NoArgsConstructor
 public class JiraConfiguration {
     @NotEmpty
     @NotNull
