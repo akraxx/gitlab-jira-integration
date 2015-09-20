@@ -1,6 +1,6 @@
 package fr.mmarie;
 
-import fr.mmarie.jira.JiraService;
+import fr.mmarie.core.jira.JiraService;
 import fr.mmarie.resources.HookResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;

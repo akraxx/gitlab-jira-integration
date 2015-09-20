@@ -1,4 +1,4 @@
-package fr.mmarie.jira;
+package fr.mmarie.core.jira;
 
 import fr.mmarie.api.jira.Comment;
 import retrofit.Call;

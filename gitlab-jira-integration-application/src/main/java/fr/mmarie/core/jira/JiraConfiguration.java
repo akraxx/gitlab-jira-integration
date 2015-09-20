@@ -1,4 +1,4 @@
-package fr.mmarie.jira;
+package fr.mmarie.core.jira;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

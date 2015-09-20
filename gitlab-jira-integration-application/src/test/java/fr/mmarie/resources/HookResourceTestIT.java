@@ -1,7 +1,7 @@
 package fr.mmarie.resources;
 
 import fr.mmarie.api.gitlab.Event;
-import fr.mmarie.jira.JiraService;
+import fr.mmarie.core.jira.JiraService;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.ClassRule;
 import org.junit.Test;

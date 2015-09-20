@@ -1,4 +1,4 @@
-package fr.mmarie.jira;
+package fr.mmarie.core.jira;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
