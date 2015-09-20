@@ -30,6 +30,7 @@ public class IntegrationService {
 
     public void commentIssues(Event event, Commit commit, List<String> issues) throws IOException {
         Preconditions.checkNotNull(issues, "issues array can not be null");
+        Preconditions.checkNotNull(commit, "commit can not be null");
 
         if(issues.size() > 0) {
             User user;
@@ -48,20 +49,20 @@ public class IntegrationService {
                     commit);
 
             // Comment each issue
-            issues.forEach(issue -> commentIssue(event, commit, user, issue));
+            issues.forEach(issue -> commentIssue(event.getRepository().getName(), commit, user, issue));
         }
     }
 
-    private void commentIssue(Event event, Commit commit, User user, String issue) {
+    public void commentIssue(String repositoryName, Commit commit, User user, String issue) {
         if(jiraService.isExistingIssue(issue)) {
             try {
                 log.info("Comment issue <{}> for commit <{}>", issue, commit);
                 jiraService.commentIssue(issue,
                         new Comment(buildComment(user,
-                                event.getRepository().getName(),
+                                repositoryName,
                                 commit)));
             } catch (IOException e) {
-                log.error("Unable to comment issue <{}>", issue);
+                log.error("Unable to comment issue <{}>", issue, e);
             }
         } else {
             log.warn("Issue <{}> has been mentioned, but does not exists", issue);
