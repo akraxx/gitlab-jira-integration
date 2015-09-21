@@ -13,6 +13,23 @@
         <module>gitlab-jira-integration-application</module>
     </modules>
 
+    <scm>
+        <connection>scm:git:git://github.com/akraxx/gitlab-jira-integration.git</connection>
+        <developerConnection>scm:git:git@github.com:akraxx/gitlab-jira-integration.git</developerConnection>
+        <url>https://github.com/akraxx/gitlab-jira-integration.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/akraxx/gitlab-jira-integration/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/akraxx/gitlab-jira-integration</url>
+    </ciManagement>
+
     <properties>
         <!--build-->
         <java.version>1.8</java.version>
