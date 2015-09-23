@@ -1,10 +1,6 @@
 language: java
-script: mvn jacoco:prepare-agent install
+script: mvn clean jacoco:prepare-agent install
 jdk:
   - oraclejdk8
 after_success:
   - mvn jacoco:report coveralls:report
-  
-cache:
-  directories:
-    - $HOME/.m2
