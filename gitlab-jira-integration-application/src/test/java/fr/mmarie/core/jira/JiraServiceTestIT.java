@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JiraServiceTestIT {
 
-    public static final int PORT = 1338;
+    public static final int PORT = 1340;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(PORT);
