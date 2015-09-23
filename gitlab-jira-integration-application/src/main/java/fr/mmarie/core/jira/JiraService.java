@@ -25,8 +25,6 @@ public class JiraService {
         this.jiraConfiguration = jiraConfiguration;
 
         OkHttpClient httpClient = new OkHttpClient();
-        httpClient.setReadTimeout(120, TimeUnit.SECONDS);
-        httpClient.setConnectTimeout(120, TimeUnit.SECONDS);
         httpClient.interceptors().add(chain -> {
             String credentials = jiraConfiguration.getUsername() + ":" + jiraConfiguration.getPassword();
             String encodedHeader = "Basic " + new String(Base64.getEncoder().encode(credentials.getBytes()));
