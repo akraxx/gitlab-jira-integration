@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import fr.mmarie.api.jira.Comment;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import retrofit.Response;
@@ -133,6 +134,7 @@ public class JiraServiceTestIT {
     }
 
     @Test
+    @Ignore
     public void isExistingIssueWithAServerError() throws Exception {
         String issue = "TEST-1";
         wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue))
