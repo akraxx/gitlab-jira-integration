@@ -30,8 +30,8 @@ public class GitLabService {
         this.gitLabConfiguration = gitLabConfiguration;
 
         OkHttpClient httpClient = new OkHttpClient();
-        httpClient.setReadTimeout(10, TimeUnit.SECONDS);
-        httpClient.setConnectTimeout(10, TimeUnit.SECONDS);
+        httpClient.setReadTimeout(120, TimeUnit.SECONDS);
+        httpClient.setConnectTimeout(120, TimeUnit.SECONDS);
         this.gitLabEndPoints = new Retrofit.Builder()
                 .baseUrl(gitLabConfiguration.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
