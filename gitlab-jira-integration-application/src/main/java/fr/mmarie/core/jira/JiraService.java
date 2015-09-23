@@ -12,6 +12,7 @@ import retrofit.Retrofit;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class JiraService {
@@ -24,6 +25,8 @@ public class JiraService {
         this.jiraConfiguration = jiraConfiguration;
 
         OkHttpClient httpClient = new OkHttpClient();
+        httpClient.setReadTimeout(10, TimeUnit.SECONDS);
+        httpClient.setConnectTimeout(10, TimeUnit.SECONDS);
         httpClient.interceptors().add(chain -> {
             String credentials = jiraConfiguration.getUsername() + ":" + jiraConfiguration.getPassword();
             String encodedHeader = "Basic " + new String(Base64.getEncoder().encode(credentials.getBytes()));

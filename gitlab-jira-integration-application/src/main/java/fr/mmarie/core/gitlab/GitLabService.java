@@ -1,6 +1,7 @@
 package fr.mmarie.core.gitlab;
 
 import com.google.common.collect.Lists;
+import com.squareup.okhttp.OkHttpClient;
 import fr.mmarie.api.gitlab.User;
 import lombok.NonNull;
 import retrofit.GsonConverterFactory;
@@ -9,6 +10,7 @@ import retrofit.Retrofit;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +28,14 @@ public class GitLabService {
 
     public GitLabService(@NonNull GitLabConfiguration gitLabConfiguration) {
         this.gitLabConfiguration = gitLabConfiguration;
+
+        OkHttpClient httpClient = new OkHttpClient();
+        httpClient.setReadTimeout(10, TimeUnit.SECONDS);
+        httpClient.setConnectTimeout(10, TimeUnit.SECONDS);
         this.gitLabEndPoints = new Retrofit.Builder()
                 .baseUrl(gitLabConfiguration.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
                 .build()
                 .create(GitLabEndPoints.class);
     }
