@@ -134,7 +134,6 @@ public class JiraServiceTestIT {
     }
 
     @Test
-    @Ignore
     public void isExistingIssueWithAServerError() throws Exception {
         String issue = "TEST-1";
         wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue))
