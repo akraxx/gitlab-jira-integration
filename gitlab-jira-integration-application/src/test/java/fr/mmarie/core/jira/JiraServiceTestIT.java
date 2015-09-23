@@ -138,7 +138,7 @@ public class JiraServiceTestIT {
         wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue))
                 .withHeader("Authorization", matching("Basic .*"))
                 .willReturn(aResponse()
-                        .withFault(Fault.RANDOM_DATA_THEN_CLOSE)));
+                        .withFault(Fault.EMPTY_RESPONSE)));
 
         assertThat(jiraService.isExistingIssue(issue)).isFalse();
 
