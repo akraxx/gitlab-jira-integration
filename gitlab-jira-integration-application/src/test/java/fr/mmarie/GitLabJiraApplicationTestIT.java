@@ -18,7 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
-public class GitLabJiraApplicationTest {
+public class GitLabJiraApplicationTestIT {
     public static final int PORT_JIRA = 1338;
     public static final int PORT_GITLAB = 1339;
 
