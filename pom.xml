@@ -5,7 +5,7 @@
     <groupId>fr.mmarie</groupId>
     <artifactId>gitlab-jira-integration</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.1</version>
 
     <name>GitLab JIRA Integration</name>
     <description>WebService to intercepts hook events from gitlab and use JIRA REST api to interacts with issues.</description>
@@ -21,7 +21,7 @@
         <connection>scm:git:git://github.com/akraxx/gitlab-jira-integration.git</connection>
         <developerConnection>scm:git:git@github.com:akraxx/gitlab-jira-integration.git</developerConnection>
         <url>https://github.com/akraxx/gitlab-jira-integration.git</url>
-        <tag>HEAD</tag>
+        <tag>v0.3.1</tag>
     </scm>
 
     <issueManagement>
