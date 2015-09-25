@@ -7,9 +7,9 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface GitLabEndPoints {
-    @GET("/api/v3/users/{id}")
+    @GET("api/v3/users/{id}")
     Call<User> getUser(@Path("id") Long id, @Query("private_token") String privateToken);
 
-    @GET("/api/v3/user")
+    @GET("api/v3/user")
     Call<User> getLoggedUser(@Query("private_token") String privateToken);
 }

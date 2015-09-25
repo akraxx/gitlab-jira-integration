@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static fr.mmarie.utils.Common.sanitizeURL;
+
 public class GitLabService {
 
     /**
@@ -30,7 +32,7 @@ public class GitLabService {
         this.gitLabConfiguration = gitLabConfiguration;
 
         this.gitLabEndPoints = new Retrofit.Builder()
-                .baseUrl(gitLabConfiguration.getUrl())
+                .baseUrl(sanitizeURL(gitLabConfiguration.getUrl()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(GitLabEndPoints.class);
@@ -46,10 +48,8 @@ public class GitLabService {
 
     public String getUserUrl(String username) {
         String baseUrl = gitLabConfiguration.getUrl();
-        if(!baseUrl.endsWith("/")) {
-            baseUrl = baseUrl+"/";
-        }
-        return baseUrl.concat("u/"+username);
+
+        return sanitizeURL(baseUrl).concat("u/" + username);
     }
 
     /**

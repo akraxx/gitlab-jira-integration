@@ -14,6 +14,8 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static fr.mmarie.utils.Common.sanitizeURL;
+
 @Slf4j
 public class JiraService {
 
@@ -34,7 +36,7 @@ public class JiraService {
         });
 
         this.jiraEndPoints = new Retrofit.Builder()
-                .baseUrl(jiraConfiguration.getUrl())
+                .baseUrl(sanitizeURL(jiraConfiguration.getUrl()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient)
                 .build()
