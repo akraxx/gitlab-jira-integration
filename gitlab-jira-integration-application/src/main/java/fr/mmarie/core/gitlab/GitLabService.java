@@ -1,7 +1,6 @@
 package fr.mmarie.core.gitlab;
 
 import com.google.common.collect.Lists;
-import com.squareup.okhttp.OkHttpClient;
 import fr.mmarie.api.gitlab.User;
 import lombok.NonNull;
 import retrofit.GsonConverterFactory;
@@ -10,7 +9,6 @@ import retrofit.Retrofit;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

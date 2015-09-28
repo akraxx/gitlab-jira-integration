@@ -18,13 +18,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import retrofit.Response;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.failBecauseExceptionWasNotThrown;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -73,6 +72,22 @@ public class IntegrationServiceTest {
     }
 
     @Test
+    public void commentExistingIssueWithoutUsername() throws Exception {
+        String issue = "TESTGITLAB-1";
+        String repository = "test-repo";
+        String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
+
+        when(jiraService.isExistingIssue(issue)).thenReturn(true);
+
+        service.commentIssue(repository,
+                Commit.builder().id(commitId).build(),
+                new User(1L, null, "john.smith@mocked.com"),
+                issue);
+
+        verify(jiraService, times(1)).commentIssue(eq(issue), any(Comment.class));
+    }
+
+    @Test
     public void commentNonExistingIssue() throws Exception {
         String issue = "TESTGITLAB-1";
         String repository = "test-repo";
@@ -114,19 +129,28 @@ public class IntegrationServiceTest {
     }
 
     @Test
-    public void commentIssuesWithUnavailableGitLabServerShouldThrowAnIOException() throws Exception {
+    public void commentIssuesWithUnavailableGitLabServerShouldUsePusherName() throws Exception {
+        service = spy(service);
+
         List<String> issues = ImmutableList.of("TESTGITLAB-1", "TESTGITLAB-2");
         long userId = 1L;
-        Event event = Event.builder().type(Event.Type.PUSH).userId(userId).build();
+        String repositoryName = "test-repo";
+        String userName = "akraxx";
+        Event event = Event.builder()
+                .type(Event.Type.PUSH)
+                .userId(userId)
+                .userName(userName)
+                .repository(Repository.builder().name(repositoryName).build())
+                .build();
 
         when(gitLabService.getUser(userId)).thenThrow(new IOException());
 
-        try {
-            service.commentIssues(event, new Commit(), issues);
-            failBecauseExceptionWasNotThrown(IOException.class);
-        } catch (IOException e) {
-            assertThat(e).isNotNull();
-        }
+        Commit commit = new Commit();
+        service.commentIssues(event, commit, issues);
+
+        User user = new User(userId, null, userName);
+        verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-1");
+        verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-2");
 
         verify(gitLabService, times(1)).getUser(userId);
     }
@@ -153,5 +177,32 @@ public class IntegrationServiceTest {
         verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-2");
 
         verify(gitLabService, times(1)).getUser(userId);
+    }
+
+    @Test
+    public void performPushEventShouldCheckCommit() throws IOException {
+        service = spy(service);
+
+        Commit commit1 = Commit.builder()
+                .id("b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327qgh")
+                .build();
+        Commit commit2 = Commit.builder()
+                .id("b6iib8db1bc1doqzjbj4d5a946b0b91f9dacd73qzd5")
+                .build();
+
+        long userId = 1L;
+        String repositoryName = "test-repo";
+        Event event = Event.builder()
+                .type(Event.Type.PUSH)
+                .userId(userId)
+                .repository(Repository.builder().name(repositoryName).build())
+                .commits(Arrays.asList(commit1, commit2))
+                .build();
+
+        service.performPushEvent(event);
+
+        verify(service, times(1)).commentIssues(event, commit1, Collections.emptyList());
+        verify(service, times(1)).commentIssues(event, commit2, Collections.emptyList());
+
     }
 }

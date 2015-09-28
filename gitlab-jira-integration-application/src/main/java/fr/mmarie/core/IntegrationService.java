@@ -1,6 +1,7 @@
 package fr.mmarie.core;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import fr.mmarie.api.gitlab.Commit;
 import fr.mmarie.api.gitlab.Event;
 import fr.mmarie.api.gitlab.User;
@@ -24,8 +25,13 @@ public class IntegrationService {
     }
 
     public String buildComment(User user, String repositoryName, Commit commit) {
-        return String.format("[%s|%s] mentioned this issue in [a commit of %s|%s]",
-                user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl());
+        if(Strings.isNullOrEmpty(user.getUsername())) {
+            return String.format("%s mentioned this issue in [a commit of %s|%s]",
+                    user.getName(), repositoryName, commit.getUrl());
+        } else {
+            return String.format("[%s|%s] mentioned this issue in [a commit of %s|%s]",
+                    user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl());
+        }
     }
 
     public void commentIssues(Event event, Commit commit, List<String> issues) throws IOException {
@@ -33,23 +39,25 @@ public class IntegrationService {
         Preconditions.checkNotNull(commit, "commit can not be null");
 
         if(issues.size() > 0) {
-            User user;
             try {
                 Response<User> userResponse = gitLabService.getUser(event.getUserId());
                 Preconditions.checkArgument(userResponse.code() == 200);
-                user = userResponse.body();
+
+                User user = userResponse.body();
+
+                issues.forEach(issue -> commentIssue(event.getRepository().getName(), commit, user, issue));
             } catch (Exception e) {
-                log.error("Unable to get gitlab user with id <{}>", event.getUserId());
-                throw e;
+                log.error("Unable to get gitlab user with id <{}>, comment issue with pusher username <{}>",
+                        event.getUserId(),
+                        event.getUserName());
+                User user = new User(event.getUserId(), null, event.getUserName());
+                issues.forEach(issue -> commentIssue(event.getRepository().getName(), commit, user, issue));
             }
 
             log.info("<{}> mentioned these issues <{}> in <{}>",
-                    user,
+                    event.getUserName(),
                     issues.size(),
                     commit);
-
-            // Comment each issue
-            issues.forEach(issue -> commentIssue(event.getRepository().getName(), commit, user, issue));
         }
     }
 

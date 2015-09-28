@@ -12,7 +12,6 @@ import retrofit.Retrofit;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static fr.mmarie.utils.Common.sanitizeURL;
 
