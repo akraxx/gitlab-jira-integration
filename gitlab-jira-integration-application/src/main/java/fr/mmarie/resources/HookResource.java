@@ -24,12 +24,14 @@ public class HookResource {
     @POST
     public void hook(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
                          @Valid Event event) {
-        log.info("<{}> Push hook received > {}", gitLabHeader, event);
-        switch (event.getType()) {
-            case PUSH:
-                service.performPushEvent(event);
-                break;
-        }
+        ((Runnable) () -> {
+            log.info("<{}> Push hook received > {}", gitLabHeader, event);
+            switch (event.getType()) {
+                case PUSH:
+                    service.performPushEvent(event);
+                    break;
+            }
+        }).run();
     }
 
 }
