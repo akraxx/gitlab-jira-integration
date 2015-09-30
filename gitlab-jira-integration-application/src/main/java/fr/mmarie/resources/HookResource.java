@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/hook")
 @Slf4j
@@ -22,16 +24,17 @@ public class HookResource {
     }
 
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     public void hook(@HeaderParam(GITLAB_HEADER) String gitLabHeader,
                          @Valid Event event) {
-        ((Runnable) () -> {
-            log.info("<{}> Push hook received > {}", gitLabHeader, event);
+        new Thread(() -> {
+            log.info("Push hook received > {}", event);
             switch (event.getType()) {
                 case PUSH:
                     service.performPushEvent(event);
                     break;
             }
-        }).run();
+        }).start();
     }
 
 }
