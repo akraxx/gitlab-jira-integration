@@ -7,6 +7,8 @@ server:
     - type: http
       port: 19091
 
+password: test-password
+
 jira:
   username: gitlab
   password: gitlab
