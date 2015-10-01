@@ -135,6 +135,7 @@
         <dropwizard.version>0.9.0-rc4</dropwizard.version>
         <lombok.version>1.16.6</lombok.version>
         <jackson.version>2.6.0</jackson.version>
+        <jersey.version>2.21</jersey.version>
 
         <!--test-->
         <junit.version>4.11</junit.version>

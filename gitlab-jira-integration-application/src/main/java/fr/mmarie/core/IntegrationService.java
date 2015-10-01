@@ -26,8 +26,9 @@ public class IntegrationService {
 
     public String buildComment(User user, String repositoryName, Commit commit) {
         if(Strings.isNullOrEmpty(user.getUsername())) {
-            return String.format("%s mentioned this issue in [a commit of %s|%s]",
-                    user.getName(), repositoryName, commit.getUrl());
+            return String.format("%s mentioned this issue in [a commit of %s|%s] \r\n "
+                            + "*Commit message* : %s",
+                    user.getName(), repositoryName, commit.getUrl(), commit.getMessage());
         } else {
             return String.format("[%s|%s] mentioned this issue in [a commit of %s|%s]",
                     user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl());
