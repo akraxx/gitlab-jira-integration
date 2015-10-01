@@ -7,6 +7,7 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
+import java.util.List;
 import java.util.Map;
 
 public interface JiraEndPoints {
@@ -15,6 +16,9 @@ public interface JiraEndPoints {
 
     @POST("rest/api/2/issue/{issue}/comment")
     Call<Comment> commentIssue(@Path("issue") String issue, @Body Comment comment);
+
+    @GET("rest/api/2/issue/{issue}/comment")
+    Call<CommentsWrapper> getCommentsOfIssue(@Path("issue") String issue);
 
     @GET("rest/api/2/serverInfo")
     Call<Map<String, Object>> serverInfo();

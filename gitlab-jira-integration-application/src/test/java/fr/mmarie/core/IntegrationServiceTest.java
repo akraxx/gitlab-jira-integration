@@ -1,7 +1,5 @@
 package fr.mmarie.core;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import fr.mmarie.api.gitlab.Commit;
 import fr.mmarie.api.gitlab.Event;
 import fr.mmarie.api.gitlab.Repository;
@@ -20,10 +18,9 @@ import retrofit.Response;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -62,10 +59,11 @@ public class IntegrationServiceTest {
         String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
         when(jiraService.isExistingIssue(issue)).thenReturn(true);
+        when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(false);
 
         service.commentIssue(repository,
-                Commit.builder().id(commitId).build(),
                 new User(1L, "John Smith", "john.smith@mocked.com"),
+                Collections.singletonList(Commit.builder().id(commitId).build()),
                 issue);
 
         verify(jiraService, times(1)).commentIssue(eq(issue), any(Comment.class));
@@ -78,10 +76,11 @@ public class IntegrationServiceTest {
         String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
         when(jiraService.isExistingIssue(issue)).thenReturn(true);
+        when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(false);
 
         service.commentIssue(repository,
-                Commit.builder().id(commitId).build(),
                 new User(1L, null, "john.smith@mocked.com"),
+                Collections.singletonList(Commit.builder().id(commitId).build()),
                 issue);
 
         verify(jiraService, times(1)).commentIssue(eq(issue), any(Comment.class));
@@ -94,10 +93,11 @@ public class IntegrationServiceTest {
         String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
         when(jiraService.isExistingIssue(issue)).thenReturn(false);
+        when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(false);
 
         service.commentIssue(repository,
-                Commit.builder().id(commitId).build(),
                 new User(1L, "John Smith", "john.smith@mocked.com"),
+                Collections.singletonList(Commit.builder().id(commitId).build()),
                 issue);
 
         verify(jiraService, times(0)).commentIssue(eq(issue), any(Comment.class));
@@ -110,85 +110,52 @@ public class IntegrationServiceTest {
         String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
         when(jiraService.isExistingIssue(issue)).thenReturn(true);
+        when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(false);
         when(jiraService.commentIssue(eq(issue), any(Comment.class)))
                 .thenThrow(new IOException());
 
         service.commentIssue(repository,
-                Commit.builder().id(commitId).build(),
                 new User(1L, "John Smith", "john.smith@mocked.com"),
+                Collections.singletonList(Commit.builder().id(commitId).build()),
                 issue);
 
         verify(jiraService, times(1)).commentIssue(eq(issue), any(Comment.class));
     }
 
     @Test
-    public void commentIssuesWithEmptyListShouldNotCallGitLabUserService() throws Exception {
-        service.commentIssues(new Event(Event.Type.PUSH), new Commit(), Lists.newArrayList());
+    public void issueShouldNotBeCommentedWhenItsAlreadyIs() throws IOException {
+        String issue = "TESTGITLAB-1";
+        String repository = "test-repo";
+        String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
-        verify(gitLabService, times(0)).getUser(anyLong());
-    }
+        when(jiraService.isExistingIssue(issue)).thenReturn(true);
+        when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(true);
 
-    @Test
-    public void commentIssuesWithUnavailableGitLabServerShouldUsePusherName() throws Exception {
-        service = spy(service);
+        service.commentIssue(repository,
+                new User(1L, "John Smith", "john.smith@mocked.com"),
+                Collections.singletonList(Commit.builder().id(commitId).build()),
+                issue);
 
-        List<String> issues = ImmutableList.of("TESTGITLAB-1", "TESTGITLAB-2");
-        long userId = 1L;
-        String repositoryName = "test-repo";
-        String userName = "akraxx";
-        Event event = Event.builder()
-                .type(Event.Type.PUSH)
-                .userId(userId)
-                .userName(userName)
-                .repository(Repository.builder().name(repositoryName).build())
-                .build();
-
-        when(gitLabService.getUser(userId)).thenThrow(new IOException());
-
-        Commit commit = new Commit();
-        service.commentIssues(event, commit, issues);
-
-        User user = new User(userId, null, userName);
-        verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-1");
-        verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-2");
-
-        verify(gitLabService, times(1)).getUser(userId);
-    }
-
-    @Test
-    public void commentIssuesShouldCallChildMethod() throws Exception {
-        service = spy(service);
-
-        List<String> issues = ImmutableList.of("TESTGITLAB-1", "TESTGITLAB-2");
-        long userId = 1L;
-        String repositoryName = "test-repo";
-        Event event = Event.builder()
-                .type(Event.Type.PUSH)
-                .userId(userId)
-                .repository(Repository.builder().name(repositoryName).build())
-                .build();
-
-        when(gitLabService.getUser(userId)).thenReturn(mockedUserResponse);
-
-        Commit commit = new Commit();
-        service.commentIssues(event, commit, issues);
-
-        verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-1");
-        verify(service, times(1)).commentIssue(repositoryName, commit, user, "TESTGITLAB-2");
-
-        verify(gitLabService, times(1)).getUser(userId);
+        verify(jiraService, times(0)).commentIssue(eq(issue), any(Comment.class));
     }
 
     @Test
     public void performPushEventShouldCheckCommit() throws IOException {
         service = spy(service);
 
+        String commitId1 = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327qgh";
         Commit commit1 = Commit.builder()
-                .id("b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327qgh")
+                .message("#GITLAB-1")
+                .id(commitId1)
                 .build();
+        String commitId2 = "b6iib8db1bc1doqzjbj4d5a946b0b91f9dacd73qzd5";
         Commit commit2 = Commit.builder()
-                .id("b6iib8db1bc1doqzjbj4d5a946b0b91f9dacd73qzd5")
+                .message("#GITLAB-1,#GITLAB-2")
+                .id(commitId2)
                 .build();
+
+        when(gitLabService.extractIssuesFromMessage("#GITLAB-1")).thenReturn(Collections.singletonList("GITLAB-1"));
+        when(gitLabService.extractIssuesFromMessage("#GITLAB-1,#GITLAB-2")).thenReturn(Arrays.asList("GITLAB-1", "GITLAB-2"));
 
         long userId = 1L;
         String repositoryName = "test-repo";
@@ -201,8 +168,18 @@ public class IntegrationServiceTest {
 
         service.performPushEvent(event);
 
-        verify(service, times(1)).commentIssues(event, commit1, Collections.emptyList());
-        verify(service, times(1)).commentIssues(event, commit2, Collections.emptyList());
+        verify(service, times(1)).commentIssue(eq(repositoryName), any(User.class), eq(Arrays.asList(commit1, commit2)), eq("GITLAB-1"));
+        verify(service, times(1)).commentIssue(eq(repositoryName), any(User.class), eq(Collections.singletonList(commit2)), eq("GITLAB-2"));
+    }
 
+    @Test
+    public void getUserWhenGitLabServiceIsAvailable() throws Exception {
+        Long userId = 10L;
+        User user = new User(userId, "John Smith", "john.smith@mocked.com");
+        when(gitLabService.getUser(userId)).thenReturn(Response.success(user));
+
+        assertThat(service.getUser(Event.builder().userId(userId).build())).isEqualTo(user);
+
+        verify(gitLabService, times(1)).getUser(userId);
     }
 }

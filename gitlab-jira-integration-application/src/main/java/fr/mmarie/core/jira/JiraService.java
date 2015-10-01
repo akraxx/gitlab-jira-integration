@@ -11,6 +11,7 @@ import retrofit.Retrofit;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 import static fr.mmarie.utils.Common.sanitizeURL;
@@ -46,6 +47,10 @@ public class JiraService {
         return jiraEndPoints.getIssue(issue).execute();
     }
 
+    public Response<CommentsWrapper> getCommentsOfIssue(String issue) throws IOException {
+        return jiraEndPoints.getCommentsOfIssue(issue).execute();
+    }
+
     public Response<Comment> commentIssue(String issue, Comment comment) throws IOException {
         return jiraEndPoints.commentIssue(issue, comment).execute();
     }
@@ -60,6 +65,15 @@ public class JiraService {
         } catch (Exception e) {
             log.error("Unable to get issue <{}>", issue, e);
             return false;
+        }
+    }
+
+    public boolean isIssueAlreadyCommented(String issue, String commitId) {
+        try {
+            List<Comment> comments = getCommentsOfIssue(issue).body().getComments();
+            return comments.stream().anyMatch(comment -> comment.getBody().contains(commitId));
+        } catch (IOException e) {
+            return true;
         }
     }
 }

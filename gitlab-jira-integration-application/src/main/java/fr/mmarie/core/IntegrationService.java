@@ -2,6 +2,8 @@ package fr.mmarie.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import fr.mmarie.api.gitlab.Commit;
 import fr.mmarie.api.gitlab.Event;
 import fr.mmarie.api.gitlab.User;
@@ -12,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import retrofit.Response;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 
 @Slf4j
 public class IntegrationService {
@@ -36,44 +38,25 @@ public class IntegrationService {
         }
     }
 
-    public void commentIssues(Event event, Commit commit, List<String> issues) throws IOException {
-        Preconditions.checkNotNull(issues, "issues array can not be null");
-        Preconditions.checkNotNull(commit, "commit can not be null");
-
-        if(issues.size() > 0) {
-            try {
-                Response<User> userResponse = gitLabService.getUser(event.getUserId());
-                Preconditions.checkArgument(userResponse.code() == 200);
-
-                User user = userResponse.body();
-
-                issues.forEach(issue -> commentIssue(event.getRepository().getName(), commit, user, issue));
-            } catch (Exception e) {
-                log.error("Unable to get gitlab user with id <{}>, comment issue with pusher username <{}>",
-                        event.getUserId(),
-                        event.getUserName());
-                User user = new User(event.getUserId(), null, event.getUserName());
-                issues.forEach(issue -> commentIssue(event.getRepository().getName(), commit, user, issue));
-            }
-
-            log.info("<{}> mentioned these issues <{}> in <{}>",
-                    event.getUserName(),
-                    issues.size(),
-                    commit);
-        }
-    }
-
-    public void commentIssue(String repositoryName, Commit commit, User user, String issue) {
+    public void commentIssue(String repositoryName, User user, Collection<Commit> commits, String issue) {
         if(jiraService.isExistingIssue(issue)) {
-            try {
-                log.info("Comment issue <{}> for commit <{}>", issue, commit);
-                jiraService.commentIssue(issue,
-                        new Comment(buildComment(user,
-                                repositoryName,
-                                commit)));
-            } catch (IOException e) {
-                log.error("Unable to comment issue <{}>", issue, e);
-            }
+            commits.forEach(commit -> {
+                if(!jiraService.isIssueAlreadyCommented(issue, commit.getId())) {
+                    try {
+                        log.info("Comment issue <{}> for commit <{}>", issue, commit);
+                        jiraService.commentIssue(issue,
+                                new Comment(buildComment(user,
+                                        repositoryName,
+                                        commit)));
+                    } catch (IOException e) {
+                        log.error("Unable to comment issue <{}>", issue, e);
+                    }
+                } else {
+                    log.warn("Issue <{}> has already been commented for commit <{}>",
+                            issue,
+                            commit.getId());
+                }
+            });
         } else {
             log.warn("Issue <{}> has been mentioned, but does not exists", issue);
         }
@@ -82,13 +65,27 @@ public class IntegrationService {
     public void performPushEvent(Event event) {
         Preconditions.checkNotNull(event.getCommits(), "commits array can not be null");
         // For each commit, extract jira issues
-        event.getCommits().forEach(commit -> {
-            try {
-                commentIssues(event, commit, gitLabService.extractIssuesFromMessage(commit.getMessage()));
-            } catch (IOException e) {
-                log.error("Unable to comment issues", e);
-            }
-        });
+        Multimap<String, Commit> jiraIssues = ArrayListMultimap.create();
+        event.getCommits().forEach(commit ->
+                gitLabService.extractIssuesFromMessage(commit.getMessage())
+                        .forEach(issue -> jiraIssues.put(issue, commit)));
+
+        User user = getUser(event);
+
+        jiraIssues.asMap().forEach((issue, commits) -> commentIssue(event.getRepository().getName(), user, commits, issue));
     }
 
+    public User getUser(Event event) {
+        try {
+            Response<User> userResponse = gitLabService.getUser(event.getUserId());
+            Preconditions.checkArgument(userResponse.code() == 200);
+
+            return userResponse.body();
+        } catch (Exception e) {
+            log.error("Unable to get gitlab user with id <{}>, comment issue with pusher username <{}>",
+                    event.getUserId(),
+                    event.getUserName());
+            return new User(event.getUserId(), null, event.getUserName());
+        }
+    }
 }

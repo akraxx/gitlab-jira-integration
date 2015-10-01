@@ -145,4 +145,48 @@ public class JiraServiceTestIT {
         wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue))
                 .withHeader("Authorization", matching("Basic .*")));
     }
+
+    @Test
+    public void isIssueAlreadyCommentedWithAServerError() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue + "/comment"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withFault(Fault.EMPTY_RESPONSE)));
+
+        assertThat(jiraService.isIssueAlreadyCommented(issue, "commitId")).isTrue();
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue + "/comment"))
+                .withHeader("Authorization", matching("Basic .*")));
+    }
+
+    @Test
+    public void alreadyCommentedIssueShouldReturnTrue() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue + "/comment"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{ \"comments\" : [{\"body\":\"commit is : commitId\"}] }")));
+
+        assertThat(jiraService.isIssueAlreadyCommented(issue, "commitId")).isTrue();
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue + "/comment"))
+                .withHeader("Authorization", matching("Basic .*")));
+    }
+
+    @Test
+    public void notCommentedIssueShouldReturnFalse() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue + "/comment"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{ \"comments\" : [{\"body\":\"commitId\"}, {\"body\":\"commitId2\"}] }")));
+
+        assertThat(jiraService.isIssueAlreadyCommented(issue, "newOne")).isFalse();
+
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue + "/comment"))
+                .withHeader("Authorization", matching("Basic .*")));
+    }
 }
