@@ -30,8 +30,9 @@ public class IntegrationService {
                             + "*Commit message* : %s",
                     user.getName(), repositoryName, commit.getUrl(), commit.getMessage());
         } else {
-            return String.format("[%s|%s] mentioned this issue in [a commit of %s|%s]",
-                    user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl());
+            return String.format("[%s|%s] mentioned this issue in [a commit of %s|%s] \r\n"
+                            + "*Commit message* : %s",
+                    user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl(), commit.getMessage());
         }
     }
 
