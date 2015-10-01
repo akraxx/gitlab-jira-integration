@@ -1,6 +1,9 @@
 package fr.mmarie.utils;
 
-public class Common {
+public final class Common {
+
+    private Common() {
+    }
 
     public static String sanitizeURL(String url) {
         if(!url.endsWith("/")) {
