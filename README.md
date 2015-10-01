@@ -29,6 +29,8 @@ server:
     - type: http
       port: 9091
 
+password: test-password
+
 jira:
   username: gitlab
   password: gitlab
@@ -41,7 +43,11 @@ gitlab:
 ```
 
 * Launch your JAR like this : ```java -jar gitlab-jira-integration-application.jar server properties.yml```
-* Add a new WebHook service in gitlab settings to : ```http://[IP/HOSTNAME]:9090/hook```
+
+You need to generate a token to authenticate your hook, format of the token is :
+[service:pwd] encoded in Base64, where service is any value you want to identify your gitlab hook, and password is the one defined in the YAML configuration file.
+
+* Add a new WebHook service in gitlab settings to : ```http://[IP/HOSTNAME]:9090/hook?token=[see above]```
 
 * Commit messages with a JIRA issue prefixed by **#** will be mentionnd in issue comments. (For example : **#TESTGIT-1**)
 
