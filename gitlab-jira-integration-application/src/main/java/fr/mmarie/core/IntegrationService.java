@@ -70,9 +70,11 @@ public class IntegrationService {
                 gitLabService.extractIssuesFromMessage(commit.getMessage())
                         .forEach(issue -> jiraIssues.put(issue, commit)));
 
-        User user = getUser(event);
+        if(jiraIssues.size() > 0) {
+            User user = getUser(event);
 
-        jiraIssues.asMap().forEach((issue, commits) -> commentIssue(event.getRepository().getName(), user, commits, issue));
+            jiraIssues.asMap().forEach((issue, commits) -> commentIssue(event.getRepository().getName(), user, commits, issue));
+        }
     }
 
     public User getUser(Event event) {

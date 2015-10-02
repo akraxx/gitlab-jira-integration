@@ -173,6 +173,24 @@ public class IntegrationServiceTest {
     }
 
     @Test
+    public void performPushEventWithoutMentionedIssuesShouldNotCallGetUserMethod() throws IOException {
+        service = spy(service);
+        String repositoryName = "test-repo";
+
+        long userId = 1L;
+        Event event = Event.builder()
+                .type(Event.Type.PUSH)
+                .userId(userId)
+                .repository(Repository.builder().name(repositoryName).build())
+                .commits(Collections.emptyList())
+                .build();
+
+        service.performPushEvent(event);
+
+        verify(service, times(0)).getUser(event);
+    }
+
+    @Test
     public void getUserWhenGitLabServiceIsAvailable() throws Exception {
         Long userId = 10L;
         User user = new User(userId, "John Smith", "john.smith@mocked.com");
