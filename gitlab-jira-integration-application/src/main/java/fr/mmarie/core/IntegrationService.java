@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.inject.Inject;
 import fr.mmarie.api.gitlab.Commit;
 import fr.mmarie.api.gitlab.Event;
 import fr.mmarie.api.gitlab.User;
@@ -21,6 +22,7 @@ public class IntegrationService {
     private final GitLabService gitLabService;
     private final JiraService jiraService;
 
+    @Inject
     public IntegrationService(GitLabService gitLabService, JiraService jiraService) {
         this.gitLabService = gitLabService;
         this.jiraService = jiraService;

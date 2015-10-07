@@ -1,5 +1,6 @@
 package fr.mmarie.core.jira;
 
+import com.google.inject.Inject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import fr.mmarie.api.jira.Comment;
@@ -23,6 +24,7 @@ public class JiraService {
 
     private final JiraEndPoints jiraEndPoints;
 
+    @Inject
     public JiraService(@NonNull JiraConfiguration jiraConfiguration) {
         this.jiraConfiguration = jiraConfiguration;
 

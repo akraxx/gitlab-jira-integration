@@ -11,6 +11,7 @@
 
     <properties>
         <retrofit.version>2.0.0-beta1</retrofit.version>
+        <dropwizard-guicey.version>3.1.0</dropwizard-guicey.version>
 
         <!--test-->
         <wiremock.version>1.57</wiremock.version>
@@ -45,6 +46,11 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-auth</artifactId>
             <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.vyarus</groupId>
+            <artifactId>dropwizard-guicey</artifactId>
+            <version>${dropwizard-guicey.version}</version>
         </dependency>
 
         <dependency>

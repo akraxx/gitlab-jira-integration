@@ -1,14 +1,16 @@
 package fr.mmarie.health;
 
-import com.codahale.metrics.health.HealthCheck;
+import com.google.inject.Inject;
 import fr.mmarie.core.gitlab.GitLabService;
+import ru.vyarus.dropwizard.guice.module.installer.feature.health.NamedHealthCheck;
 
 import javax.ws.rs.core.Response;
 
-public class GitLabHealthCheck extends HealthCheck {
+public class GitLabHealthCheck extends NamedHealthCheck {
 
     private final GitLabService gitLabService;
 
+    @Inject
     public GitLabHealthCheck(GitLabService gitLabService) {
         this.gitLabService = gitLabService;
     }
@@ -21,5 +23,10 @@ public class GitLabHealthCheck extends HealthCheck {
         } else {
             return Result.unhealthy("Unable to contact GitLab server, HTTP code received <"+code+">");
         }
+    }
+
+    @Override
+    public String getName() {
+        return "gitlab";
     }
 }

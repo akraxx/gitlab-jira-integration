@@ -1,6 +1,7 @@
 package fr.mmarie.core.gitlab;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import fr.mmarie.api.gitlab.User;
 import lombok.NonNull;
 import retrofit.GsonConverterFactory;
@@ -26,6 +27,7 @@ public class GitLabService {
 
     private final GitLabConfiguration gitLabConfiguration;
 
+    @Inject
     public GitLabService(@NonNull GitLabConfiguration gitLabConfiguration) {
         this.gitLabConfiguration = gitLabConfiguration;
 

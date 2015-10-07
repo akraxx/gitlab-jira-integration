@@ -1,5 +1,6 @@
 package fr.mmarie.resources;
 
+import com.google.inject.Inject;
 import fr.mmarie.api.gitlab.Event;
 import fr.mmarie.core.IntegrationService;
 import io.dropwizard.auth.Auth;
@@ -25,6 +26,7 @@ public class HookResource {
 
     private final IntegrationService service;
 
+    @Inject
     public HookResource(IntegrationService service) {
         this.service = service;
     }
