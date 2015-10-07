@@ -6,6 +6,7 @@ import fr.mmarie.core.auth.GitLabAuthFilter;
 import fr.mmarie.core.auth.GitLabAuthenticator;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -24,9 +25,11 @@ public class HookResourceTestIT {
 
     private static final String PASSWORD = "test-password";
 
+    private static final Environment ENVIRONMENT = mock(Environment.class);
+
     @ClassRule
     public static final ResourceTestRule resources = ResourceTestRule.builder()
-            .addResource(new HookResource(INTEGRATION_SERVICE))
+            .addResource(new HookResource(INTEGRATION_SERVICE, ENVIRONMENT))
             .addProvider(new AuthDynamicFeature(new GitLabAuthFilter.Builder()
                     .setAuthenticator(new GitLabAuthenticator(PASSWORD))
                     .setUnauthorizedHandler((s, s1) -> Response.status(Response.Status.UNAUTHORIZED).build())
