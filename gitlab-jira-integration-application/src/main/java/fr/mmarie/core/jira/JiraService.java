@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import fr.mmarie.api.jira.Comment;
+import fr.mmarie.api.jira.response.CommentResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import retrofit.GsonConverterFactory;
@@ -49,7 +50,7 @@ public class JiraService {
         return jiraEndPoints.getIssue(issue).execute();
     }
 
-    public Response<CommentsWrapper> getCommentsOfIssue(String issue) throws IOException {
+    public Response<CommentResponse> getCommentsOfIssue(String issue) throws IOException {
         return jiraEndPoints.getCommentsOfIssue(issue).execute();
     }
 

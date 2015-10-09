@@ -1,4 +1,4 @@
-package fr.mmarie.core.jira;
+package fr.mmarie.api.jira.response;
 
 import fr.mmarie.api.jira.Comment;
 import lombok.Getter;
@@ -8,7 +8,8 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
-public class CommentsWrapper {
+public class CommentResponse {
 
     private List<Comment> comments;
+
 }
