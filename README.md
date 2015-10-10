@@ -9,8 +9,8 @@ Requirements
 ============
 
 * A JVM (jdk 8)
-* An account on JIRA which have admin access on projects
-* An admin account on gitlab to have a private_token
+* An account on JIRA which can comment issues on projects
+* An account on gitlab to have a private_token (admin rights are not required)
 
 How to use
 ==========
