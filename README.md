@@ -49,6 +49,25 @@ gitlab:
 
 * Launch your JAR like this : ```java -jar gitlab-jira-integration-application.jar server properties.yml```
 
+If everything is ok you should have something like this in your console :
+
+```
+INFO  [2015-10-10 17:48:43,361] [main] [i.d.j.DropwizardResourceConfig] [hookId:-] : The following paths were found for the configured resources:
+
+    POST    /hook (fr.mmarie.resources.HookResource)
+
+INFO  [2015-10-10 17:48:43,365] [main] [o.e.j.s.h.ContextHandler] [hookId:-] : Started i.d.j.MutableServletContextHandler@43a0a32d{/,null,AVAILABLE}
+INFO  [2015-10-10 17:48:43,371] [main] [i.d.s.AdminEnvironment] [hookId:-] : tasks = 
+
+    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
+    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
+
+INFO  [2015-10-10 17:48:43,376] [main] [o.e.j.s.h.ContextHandler] [hookId:-] : Started i.d.j.MutableServletContextHandler@5aaaa446{/,null,AVAILABLE}
+INFO  [2015-10-10 17:48:43,394] [main] [o.e.j.s.ServerConnector] [hookId:-] : Started application@794b435f{HTTP/1.1}{0.0.0.0:9090}
+INFO  [2015-10-10 17:48:43,398] [main] [o.e.j.s.ServerConnector] [hookId:-] : Started admin@38f2e97e{HTTP/1.1}{0.0.0.0:9091}
+INFO  [2015-10-10 17:48:43,399] [main] [o.e.j.s.Server] [hookId:-] : Started @3812ms
+```
+
 You need to generate a token to authenticate your hook, format of the token is :
 [service:pwd] encoded in Base64, where service is any value you want to identify your gitlab hook, and password is the one defined in the YAML configuration file.
 
