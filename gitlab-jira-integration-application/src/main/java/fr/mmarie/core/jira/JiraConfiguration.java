@@ -34,9 +34,13 @@ public class JiraConfiguration {
     private List<TransitionConfiguration> transitions;
 
     @VisibleForTesting
-    public JiraConfiguration(String username, String password, String url) {
+    public JiraConfiguration(String username,
+                             String password,
+                             String url,
+                             List<TransitionConfiguration> transitions) {
         this.username = username;
         this.password = password;
         this.url = url;
+        this.transitions = transitions;
     }
 }

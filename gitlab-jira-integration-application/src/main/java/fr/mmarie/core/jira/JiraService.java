@@ -1,6 +1,8 @@
 package fr.mmarie.core.jira;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -87,6 +89,31 @@ public class JiraService {
         }
 
         return issues;
+    }
+
+    /**
+     * Extracts issues names from given {@code message}.
+     *
+     * @param message Commit message
+     * @return Matching issues name
+     */
+    public Map<String, String> extractMatchingTransitionsFromMessage(String message) {
+        List<TransitionConfiguration> transitions = jiraConfiguration.getTransitions();
+
+        Map<String, String> matchingTransition = Maps.newHashMap();
+
+        for (TransitionConfiguration transition : transitions) {
+            transition.getKeywords().forEach(keyword ->  {
+                String regex = keyword.toLowerCase() + " " + ISSUE_PATTERN.pattern();
+                Matcher matcher = Pattern.compile(regex).matcher(message.toLowerCase());
+
+                while (matcher.find()) {
+                    matchingTransition.put(matcher.group(1).toUpperCase(), transition.getName());
+                }
+            });
+        }
+
+        return matchingTransition;
     }
 
     public boolean isExistingIssue(String issue) {

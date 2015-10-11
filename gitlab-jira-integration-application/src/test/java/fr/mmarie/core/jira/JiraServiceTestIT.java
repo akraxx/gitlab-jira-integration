@@ -2,7 +2,10 @@ package fr.mmarie.core.jira;
 
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import fr.mmarie.api.jira.Comment;
+import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +35,8 @@ public class JiraServiceTestIT {
 
     public JiraConfiguration jiraConfiguration = new JiraConfiguration("username",
             "password",
-            String.format("http://localhost:%d", PORT));
+            String.format("http://localhost:%d", PORT),
+            ImmutableList.of(new TransitionConfiguration("Close", ImmutableList.of("close", "fix"))));
 
     public JiraService jiraService;
 
@@ -221,5 +225,51 @@ public class JiraServiceTestIT {
         assertThat(issues)
                 .hasSize(2)
                 .containsExactly("TEST-1", "TEST-15289");
+    }
+
+    @Test
+    public void extractMatchingTransitionsFromMessageWithoutTransition() throws Exception {
+        String message = "test: no issue";
+
+        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
+
+        assertThat(matchingTransitions)
+                .isEmpty();
+    }
+
+    @Test
+    public void extractMatchingTransitionsFromMessageWithOneTransition() throws Exception {
+        String message = "test: close #TEST-15289";
+
+        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
+
+        assertThat(matchingTransitions)
+                .hasSize(1);
+        assertThat(matchingTransitions)
+                .containsOnly(MapEntry.entry("TEST-15289", "Close"));
+    }
+
+    @Test
+    public void extractMatchingTransitionsFromMessageCaseInsensitive() throws Exception {
+        String message = "test: FIX #TEST-15289";
+
+        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
+
+        assertThat(matchingTransitions)
+                .hasSize(1);
+        assertThat(matchingTransitions)
+                .containsOnly(MapEntry.entry("TEST-15289", "Close"));
+    }
+
+    @Test
+    public void extractMatchingTransitionsFromMessageWithTwoTransitionResturnTheFirstOne() throws Exception {
+        String message = "test: Close #TEST-15289 and FIX #TEST-52";
+
+        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
+
+        assertThat(matchingTransitions)
+                .hasSize(2);
+        assertThat(matchingTransitions)
+                .containsOnly(MapEntry.entry("TEST-15289", "Close"), MapEntry.entry("TEST-52", "Close"));
     }
 }
