@@ -1,0 +1,12 @@
+{
+  "transitions": [
+    {
+      "id": "15",
+      "name": "Close"
+    },
+    {
+      "id": "18",
+      "name": "Open"
+    }
+  ]
+}

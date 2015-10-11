@@ -1,0 +1,15 @@
+{
+  "update": {
+    "comment": [
+      {
+        "add": {
+          "body": "Bug has been fixed."
+        }
+      }
+    ]
+  },
+  "transition": {
+    "id": "15",
+    "name": "Close"
+  }
+}

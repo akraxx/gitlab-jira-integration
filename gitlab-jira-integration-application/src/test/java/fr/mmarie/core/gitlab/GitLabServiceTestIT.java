@@ -81,38 +81,6 @@ public class GitLabServiceTestIT {
     }
 
     @Test
-    public void extractIssuesFromMessageWithoutIssue() throws Exception {
-        String message = "test: no issue";
-
-        final List<String> issues = gitLabService.extractIssuesFromMessage(message);
-
-        assertThat(issues)
-                .hasSize(0);
-    }
-
-    @Test
-    public void extractIssuesFromMessageWithOneIssue() throws Exception {
-        String message = "test(#TEST-1): single issue";
-
-        final List<String> issues = gitLabService.extractIssuesFromMessage(message);
-
-        assertThat(issues)
-                .hasSize(1)
-                .containsExactly("TEST-1");
-    }
-
-    @Test
-    public void extractIssuesFromMessageWithMoreThanOneIssue() throws Exception {
-        String message = "test(#TEST-1): issue related to #TEST-15289";
-
-        final List<String> issues = gitLabService.extractIssuesFromMessage(message);
-
-        assertThat(issues)
-                .hasSize(2)
-                .containsExactly("TEST-1", "TEST-15289");
-    }
-
-    @Test
     public void getUserUrl() throws Exception {
         String username = "akraxx";
         String url = gitLabService.getUserUrl(username);

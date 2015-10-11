@@ -8,13 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@ToString(of = "body")
+@ToString(of = {"id", "name"})
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Comment {
+public class Transition {
 
-    @JsonProperty("body")
-    private String body;
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonProperty("name")
+    private String name;
 
 }
