@@ -2,6 +2,7 @@ package fr.mmarie.core.jira;
 
 import fr.mmarie.api.jira.Comment;
 import fr.mmarie.api.jira.response.CommentResponse;
+import fr.mmarie.api.jira.response.TransitionResponse;
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -21,7 +22,7 @@ public interface JiraEndPoints {
     Call<CommentResponse> getCommentsOfIssue(@Path("issue") String issue);
 
     @GET("rest/api/2/issue/{issue}/transitions")
-    Call<CommentResponse> getTransitionsOfIssue(@Path("issue") String issue);
+    Call<TransitionResponse> getTransitionsOfIssue(@Path("issue") String issue);
 
     @GET("rest/api/2/serverInfo")
     Call<Map<String, Object>> serverInfo();
