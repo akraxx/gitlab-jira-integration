@@ -154,8 +154,8 @@ public class IntegrationServiceTest {
                 .id(commitId2)
                 .build();
 
-        when(gitLabService.extractIssuesFromMessage("#GITLAB-1")).thenReturn(Collections.singletonList("GITLAB-1"));
-        when(gitLabService.extractIssuesFromMessage("#GITLAB-1,#GITLAB-2")).thenReturn(Arrays.asList("GITLAB-1", "GITLAB-2"));
+        when(jiraService.extractIssuesFromMessage("#GITLAB-1")).thenReturn(Collections.singletonList("GITLAB-1"));
+        when(jiraService.extractIssuesFromMessage("#GITLAB-1,#GITLAB-2")).thenReturn(Arrays.asList("GITLAB-1", "GITLAB-2"));
 
         long userId = 1L;
         String repositoryName = "test-repo";

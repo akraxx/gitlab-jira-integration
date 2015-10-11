@@ -69,7 +69,7 @@ public class IntegrationService {
         // For each commit, extract jira issues
         Multimap<String, Commit> jiraIssues = ArrayListMultimap.create();
         event.getCommits().forEach(commit ->
-                gitLabService.extractIssuesFromMessage(commit.getMessage())
+                jiraService.extractIssuesFromMessage(commit.getMessage())
                         .forEach(issue -> jiraIssues.put(issue, commit)));
 
         if(jiraIssues.size() > 0) {

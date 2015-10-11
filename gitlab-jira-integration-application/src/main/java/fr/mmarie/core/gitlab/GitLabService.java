@@ -1,6 +1,5 @@
 package fr.mmarie.core.gitlab;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import fr.mmarie.api.gitlab.User;
 import lombok.NonNull;
@@ -9,19 +8,10 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static fr.mmarie.utils.Common.sanitizeURL;
 
 public class GitLabService {
-
-    /**
-     * Matches issues with name like : #TEST-1, does not support special characters in
-     * project name, #TEST-TEST-1 won't match.
-     */
-    public static final Pattern ISSUE_PATTERN = Pattern.compile("#\\s*(\\w+-\\d+)");
 
     private final GitLabEndPoints gitLabEndPoints;
 
@@ -52,21 +42,4 @@ public class GitLabService {
         return sanitizeURL(baseUrl).concat("u/" + username);
     }
 
-    /**
-     * Extracts issues names from given {@code message}.
-     *
-     * @param message Commit message
-     * @return Matching issues name
-     */
-    public List<String> extractIssuesFromMessage(String message) {
-        List<String> issues = Lists.newArrayList();
-
-        Matcher matcher = ISSUE_PATTERN.matcher(message);
-
-        while (matcher.find()) {
-            issues.add(matcher.group(1));
-        }
-
-        return issues;
-    }
 }
