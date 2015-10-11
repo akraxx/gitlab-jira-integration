@@ -5,16 +5,21 @@ import com.google.common.annotations.VisibleForTesting;
 import fr.mmarie.api.jira.Comment;
 import fr.mmarie.api.jira.Transition;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @NoArgsConstructor
 @EqualsAndHashCode(of = "update")
+@ToString(of = "transition")
+@Getter
 public class TransitionInput {
 
     @EqualsAndHashCode(of = "comments")
     @NoArgsConstructor
+    @Getter
     public static class Update {
         @JsonProperty("comment")
         private List<CommentWrapper> comments;
@@ -27,6 +32,7 @@ public class TransitionInput {
 
     @EqualsAndHashCode(of = "comment")
     @NoArgsConstructor
+    @Getter
     public static class CommentWrapper {
         @JsonProperty("add")
         private Comment comment;

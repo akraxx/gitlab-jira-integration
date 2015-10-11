@@ -40,6 +40,27 @@ public class IntegrationService {
         }
     }
 
+    public String buildCommentForTransition(User user, String repositoryName, Commit commit) {
+        if(Strings.isNullOrEmpty(user.getUsername())) {
+            return String.format("%s changed status of this issue in [a commit of %s|%s] to *%s* \r\n\r\n "
+                            + "*Commit message* : %s",
+                    user.getName(),
+                    repositoryName,
+                    commit.getUrl(),
+                    JiraService.TRANSITION_HOLDER,
+                    commit.getMessage());
+        } else {
+            return String.format("[%s|%s] changed status of this issue in [a commit of %s|%s] to *%s* \r\n\r\n"
+                            + "*Commit message* : %s",
+                    user.getName(),
+                    gitLabService.getUserUrl(user.getUsername()),
+                    repositoryName,
+                    commit.getUrl(),
+                    JiraService.TRANSITION_HOLDER,
+                    commit.getMessage());
+        }
+    }
+
     public void commentIssue(String repositoryName, User user, Collection<Commit> commits, String issue) {
         if(jiraService.isExistingIssue(issue)) {
             commits.forEach(commit -> {
@@ -50,6 +71,10 @@ public class IntegrationService {
                                 new Comment(buildComment(user,
                                         repositoryName,
                                         commit)));
+                        jiraService.performTransition(commit.getMessage(), issue,
+                                buildCommentForTransition(user,
+                                        repositoryName,
+                                        commit));
                     } catch (IOException e) {
                         log.error("Unable to comment issue <{}>", issue, e);
                     }

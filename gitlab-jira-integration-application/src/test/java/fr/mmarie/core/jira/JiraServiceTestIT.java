@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import fr.mmarie.api.jira.Comment;
+import fr.mmarie.api.jira.input.TransitionInput;
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Rule;
@@ -196,80 +197,44 @@ public class JiraServiceTestIT {
     }
 
     @Test
-    public void extractIssuesFromMessageWithoutIssue() throws Exception {
-        String message = "test: no issue";
+    public void isExistingTransitionWithNonExistingTransaction() {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue + "/transitions"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{ \"transitions\" : [{\"id\":\"15\", \"name\":\"Close\"}] }")));
 
-        final List<String> issues = jiraService.extractIssuesFromMessage(message);
+        assertThat(jiraService.isExistingTransition(issue, "test")).isFalse();
 
-        assertThat(issues)
-                .hasSize(0);
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue + "/transitions"))
+                .withHeader("Authorization", matching("Basic .*")));
     }
 
     @Test
-    public void extractIssuesFromMessageWithOneIssue() throws Exception {
-        String message = "test(#TEST-1): single issue";
+    public void isExistingTransitionWithExistingTransaction() {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(get(urlEqualTo("/rest/api/2/issue/" + issue + "/transitions"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{ \"transitions\" : [{\"id\":\"15\", \"name\":\"Close\"}, {\"id\":\"16\", \"name\":\"Open\"}] }")));
 
-        final List<String> issues = jiraService.extractIssuesFromMessage(message);
+        assertThat(jiraService.isExistingTransition(issue, "close")).isTrue();
 
-        assertThat(issues)
-                .hasSize(1)
-                .containsExactly("TEST-1");
+        wireMockRule.verify(getRequestedFor(urlEqualTo("/rest/api/2/issue/" + issue + "/transitions"))
+                .withHeader("Authorization", matching("Basic .*")));
     }
 
     @Test
-    public void extractIssuesFromMessageWithMoreThanOneIssue() throws Exception {
-        String message = "test(#TEST-1): issue related to #TEST-15289";
+    public void transitionOnIssueWithBadResponseStatus() throws Exception {
+        String issue = "TEST-1";
+        wireMockRule.stubFor(post(urlEqualTo("/rest/api/2/issue/" + issue + "/transitions"))
+                .withHeader("Authorization", matching("Basic .*"))
+                .willReturn(aResponse()
+                        .withStatus(400)
+                        .withBody("Bad request !")));
 
-        final List<String> issues = jiraService.extractIssuesFromMessage(message);
-
-        assertThat(issues)
-                .hasSize(2)
-                .containsExactly("TEST-1", "TEST-15289");
-    }
-
-    @Test
-    public void extractMatchingTransitionsFromMessageWithoutTransition() throws Exception {
-        String message = "test: no issue";
-
-        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
-
-        assertThat(matchingTransitions)
-                .isEmpty();
-    }
-
-    @Test
-    public void extractMatchingTransitionsFromMessageWithOneTransition() throws Exception {
-        String message = "test: close #TEST-15289";
-
-        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
-
-        assertThat(matchingTransitions)
-                .hasSize(1);
-        assertThat(matchingTransitions)
-                .containsOnly(MapEntry.entry("TEST-15289", "Close"));
-    }
-
-    @Test
-    public void extractMatchingTransitionsFromMessageCaseInsensitive() throws Exception {
-        String message = "test: FIX #TEST-15289";
-
-        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
-
-        assertThat(matchingTransitions)
-                .hasSize(1);
-        assertThat(matchingTransitions)
-                .containsOnly(MapEntry.entry("TEST-15289", "Close"));
-    }
-
-    @Test
-    public void extractMatchingTransitionsFromMessageWithTwoTransitionResturnTheFirstOne() throws Exception {
-        String message = "test: Close #TEST-15289 and FIX #TEST-52";
-
-        final Map<String, String> matchingTransitions = jiraService.extractMatchingTransitionsFromMessage(message);
-
-        assertThat(matchingTransitions)
-                .hasSize(2);
-        assertThat(matchingTransitions)
-                .containsOnly(MapEntry.entry("TEST-15289", "Close"), MapEntry.entry("TEST-52", "Close"));
+        jiraService.transitionOnIssue(issue, new TransitionInput());
     }
 }

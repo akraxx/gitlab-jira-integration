@@ -63,6 +63,7 @@ public class HookResource {
                 principal.getName(),
                 new Date().getTime());
         MDC.put(MDC_KEY_HOOK_ID, requestId);
+
         log.info("initMDC(): initialized new requestId <{}>", requestId);
     }
 

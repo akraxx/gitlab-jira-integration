@@ -19,7 +19,7 @@ jira:
   password: gitlab
   url: http://localhost:8090
   transitions:
-    - name: Close
+    - name: Closed
       # Case insensitive
       keywords:
         - closed

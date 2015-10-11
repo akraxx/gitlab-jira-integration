@@ -3,7 +3,7 @@ package fr.mmarie.core.gitlab;
 import com.google.inject.Inject;
 import fr.mmarie.api.gitlab.User;
 import lombok.NonNull;
-import retrofit.GsonConverterFactory;
+import retrofit.JacksonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -23,7 +23,7 @@ public class GitLabService {
 
         this.gitLabEndPoints = new Retrofit.Builder()
                 .baseUrl(sanitizeURL(gitLabConfiguration.getUrl()))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(GitLabEndPoints.class);
     }

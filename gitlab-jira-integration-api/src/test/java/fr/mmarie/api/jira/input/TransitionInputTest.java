@@ -50,4 +50,18 @@ public class TransitionInputTest {
 
     }
 
+    @Test
+    public void testToString() throws Exception {
+        TransitionInput.CommentWrapper commentWrapper = new TransitionInput.CommentWrapper(
+                new Comment("Bug has been fixed."));
+
+        final TransitionInput expected = new TransitionInput(
+                new TransitionInput.Update(ImmutableList.of(commentWrapper)),
+                new Transition(15L, "Close")
+        );
+
+        assertThat(expected.toString())
+                .isEqualTo("TransitionInput(transition=Transition(id=15, name=Close))");
+    }
+
 }
