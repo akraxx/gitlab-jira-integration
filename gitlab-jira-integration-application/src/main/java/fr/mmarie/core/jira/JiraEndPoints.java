@@ -20,6 +20,9 @@ public interface JiraEndPoints {
     @GET("rest/api/2/issue/{issue}/comment")
     Call<CommentResponse> getCommentsOfIssue(@Path("issue") String issue);
 
+    @GET("rest/api/2/issue/{issue}/transitions")
+    Call<CommentResponse> getTransitionsOfIssue(@Path("issue") String issue);
+
     @GET("rest/api/2/serverInfo")
     Call<Map<String, Object>> serverInfo();
 }
