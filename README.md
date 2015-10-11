@@ -100,6 +100,7 @@ jira:
 Example of commit messages working with previous configuration :
 
 `` Test Closes #TESGITLAB-3 ``
+
 `` Hello World FIX #TESGITLAB-15 `` 
 
 This message will close both issues :
