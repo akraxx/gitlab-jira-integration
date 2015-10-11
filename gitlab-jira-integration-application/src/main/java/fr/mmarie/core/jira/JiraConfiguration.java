@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +27,11 @@ public class JiraConfiguration {
     @NotNull
     @JsonProperty
     private String url;
+
+    @NotEmpty
+    @NotNull
+    @JsonProperty
+    private List<TransitionConfiguration> transitions;
 
     @VisibleForTesting
     public JiraConfiguration(String username, String password, String url) {

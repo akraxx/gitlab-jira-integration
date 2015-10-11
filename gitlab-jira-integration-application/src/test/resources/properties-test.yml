@@ -13,6 +13,12 @@ jira:
   username: gitlab
   password: gitlab
   url: http://localhost:1338
+  transitions:
+      - name: Close
+        # Case insensitive
+        keywords:
+          - close
+          - fix
 
 gitlab:
   private_token: N1bJ4n8-rbFAEf8Syrh2

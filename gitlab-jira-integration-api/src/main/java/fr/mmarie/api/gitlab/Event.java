@@ -11,6 +11,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -58,6 +59,9 @@ public class Event {
 
     @JsonProperty("commits")
     private List<Commit> commits;
+
+    @JsonProperty("object_attributes")
+    private Map<String, Object> objectAttributes;
 
     @JsonProperty("total_commits_count")
     private Long totalCommitsCount;
