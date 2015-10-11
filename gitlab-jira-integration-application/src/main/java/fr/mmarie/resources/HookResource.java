@@ -8,7 +8,6 @@ import fr.mmarie.core.IntegrationService;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.setup.Environment;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 
 import javax.validation.Valid;
 import javax.ws.rs.HeaderParam;
@@ -45,7 +44,7 @@ public class HookResource {
                      @HeaderParam(GITLAB_HEADER) String gitLabHeader,
                      @Valid Event event) {
         new Thread(() -> {
-            initMDC(principal);
+            setThreadName(principal);
             metricRegistry.counter(principal.getName()).inc();
 
             log.info("Push hook received > {}", event);
@@ -54,21 +53,16 @@ public class HookResource {
                     service.performPushEvent(event);
                     break;
             }
-            clearMDC();
         }).start();
     }
 
-    private void initMDC(Principal principal) {
+    private void setThreadName(Principal principal) {
         final String requestId = String.format("%s-%d",
                 principal.getName(),
                 new Date().getTime());
-        MDC.put(MDC_KEY_HOOK_ID, requestId);
+        Thread.currentThread().setName(requestId);
 
         log.info("initMDC(): initialized new requestId <{}>", requestId);
-    }
-
-    private void clearMDC() {
-        MDC.remove(MDC_KEY_HOOK_ID);
     }
 
 }
