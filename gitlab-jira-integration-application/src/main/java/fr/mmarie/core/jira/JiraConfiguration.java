@@ -2,6 +2,7 @@ package fr.mmarie.core.jira;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -28,10 +29,9 @@ public class JiraConfiguration {
     @JsonProperty
     private String url;
 
-    @NotEmpty
     @NotNull
     @JsonProperty
-    private List<TransitionConfiguration> transitions;
+    private List<TransitionConfiguration> transitions = Lists.newArrayList();
 
     @VisibleForTesting
     public JiraConfiguration(String username,
