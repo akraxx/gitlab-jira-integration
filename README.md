@@ -75,6 +75,43 @@ You need to generate a token to authenticate your hook, format of the token is :
 
 * Commit messages with a JIRA issue prefixed by **#** will be mentionnd in issue comments. (For example : **#TESTGIT-1**)
 
+Transitions
+===========
+
+Since version **0.5.0** it's possible to perfom transition on JIRA issues (ie Close, Fix...) :
+
+To do that, you need to add this part to your configuration :
+
+```
+jira:
+  # Username, pwd...
+  transitions:
+    - name: Closed
+      # Case insensitive
+      keywords:
+        - closed
+        - closes
+        - close
+        - fixed
+        - fixes
+        - fix
+```
+
+Example of commit messages working with previous configuration :
+
+`` Test Closes #TESGITLAB-3 ``
+`` Hello World FIX #TESGITLAB-15 `` 
+
+This message will close both issues :
+
+`` Hello World FIX #TESGITLAB-25 and Close #TESGITLAB-47 ``
+
+To edit your transitions in JIRA, take a look at the [jira documentation](https://confluence.atlassian.com/jira/configuring-workflow-185729632.html)
+
+The change will be also commented in the jira issue activity to notify in which commit the issue has been closed (or any other transition)
+
+*Note :* The default resolution will be taken, it only manage **transition**
+
 Dependencies
 ============
 
