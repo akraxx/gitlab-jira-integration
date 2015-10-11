@@ -32,7 +32,7 @@ server:
 logging:
   appenders:
     - type: console
-      logFormat: "%-5p [%d{ISO8601,UTC}] [%thread] [%c{5}] [hookId:%X{hookId:--}] : %m%n%rEx"
+      logFormat: "%-5p [%d{ISO8601,UTC}] [%thread] [%c{5}] %m%n%rEx"
       
 password: test-password
 
