@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import retrofit.Response;
@@ -18,6 +19,7 @@ import retrofit.Response;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -58,6 +60,7 @@ public class IntegrationServiceTest {
         String repository = "test-repo";
         String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
+        ArgumentCaptor<Comment> commentArgumentCaptor = ArgumentCaptor.forClass(Comment.class);
         when(jiraService.isExistingIssue(issue)).thenReturn(true);
         when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(false);
 
@@ -66,7 +69,10 @@ public class IntegrationServiceTest {
                 Collections.singletonList(Commit.builder().id(commitId).build()),
                 issue);
 
-        verify(jiraService, times(1)).commentIssue(eq(issue), any(Comment.class));
+        verify(jiraService, times(1)).commentIssue(eq(issue), commentArgumentCaptor.capture());
+        Comment comment = commentArgumentCaptor.getValue();
+        assertThat(comment.getBody())
+                .contains("unknown date of commit");
     }
 
     @Test
@@ -75,15 +81,28 @@ public class IntegrationServiceTest {
         String repository = "test-repo";
         String commitId = "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327";
 
+        ArgumentCaptor<Comment> commentArgumentCaptor = ArgumentCaptor.forClass(Comment.class);
         when(jiraService.isExistingIssue(issue)).thenReturn(true);
         when(jiraService.isIssueAlreadyCommented(issue, commitId)).thenReturn(false);
 
+        String message = "Very nice commit !";
+        String url = "http://test.gitlab.fr/";
+        Date date = new Date();
+
         service.commentIssue(repository,
                 new User(1L, null, "john.smith@mocked.com"),
-                Collections.singletonList(Commit.builder().id(commitId).build()),
+                Collections.singletonList(Commit.builder()
+                        .id(commitId)
+                        .message(message)
+                        .url(url)
+                        .timestamp(date)
+                        .build()),
                 issue);
 
-        verify(jiraService, times(1)).commentIssue(eq(issue), any(Comment.class));
+        verify(jiraService, times(1)).commentIssue(eq(issue), commentArgumentCaptor.capture());
+        Comment comment = commentArgumentCaptor.getValue();
+        assertThat(comment.getBody())
+                .contains("john.smith@mocked.com", repository, message, url, IntegrationService.DATE_FORMAT.format(date), message);
     }
 
     @Test

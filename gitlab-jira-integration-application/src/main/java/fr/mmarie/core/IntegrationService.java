@@ -15,10 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import retrofit.Response;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 @Slf4j
 public class IntegrationService {
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+
     private final GitLabService gitLabService;
     private final JiraService jiraService;
 
@@ -28,36 +33,41 @@ public class IntegrationService {
         this.jiraService = jiraService;
     }
 
+    public String getDateAsString(Date date) {
+        if (date == null) {
+            return "unknown date of commit";
+        } else {
+            return DATE_FORMAT.format(date);
+        }
+    }
+
     public String buildComment(User user, String repositoryName, Commit commit) {
         if(Strings.isNullOrEmpty(user.getUsername())) {
             return String.format("%s mentioned this issue in [a commit of %s|%s] \r\n "
-                            + "*Commit message* : %s",
-                    user.getName(), repositoryName, commit.getUrl(), commit.getMessage());
+                            + "*%s* : %s",
+                    user.getName(), repositoryName, commit.getUrl(),
+                    getDateAsString(commit.getTimestamp()), commit.getMessage());
         } else {
             return String.format("[%s|%s] mentioned this issue in [a commit of %s|%s] \r\n"
-                            + "*Commit message* : %s",
-                    user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl(), commit.getMessage());
+                            + "*%s* : %s",
+                    user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl(),
+                    getDateAsString(commit.getTimestamp()), commit.getMessage());
         }
     }
 
     public String buildCommentForTransition(User user, String repositoryName, Commit commit) {
         if(Strings.isNullOrEmpty(user.getUsername())) {
             return String.format("%s changed status of this issue in [a commit of %s|%s] to *%s* \r\n\r\n "
-                            + "*Commit message* : %s",
-                    user.getName(),
-                    repositoryName,
-                    commit.getUrl(),
+                            + "*%s* : %s",
+                    user.getName(), repositoryName, commit.getUrl(),
                     JiraService.TRANSITION_HOLDER,
-                    commit.getMessage());
+                    getDateAsString(commit.getTimestamp()), commit.getMessage());
         } else {
             return String.format("[%s|%s] changed status of this issue in [a commit of %s|%s] to *%s* \r\n\r\n"
-                            + "*Commit message* : %s",
-                    user.getName(),
-                    gitLabService.getUserUrl(user.getUsername()),
-                    repositoryName,
-                    commit.getUrl(),
+                            + "*%s* : %s",
+                    user.getName(), gitLabService.getUserUrl(user.getUsername()), repositoryName, commit.getUrl(),
                     JiraService.TRANSITION_HOLDER,
-                    commit.getMessage());
+                    getDateAsString(commit.getTimestamp()), commit.getMessage());
         }
     }
 
