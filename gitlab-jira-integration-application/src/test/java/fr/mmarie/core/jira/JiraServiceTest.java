@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import fr.mmarie.api.jira.Comment;
 import fr.mmarie.api.jira.Transition;
 import fr.mmarie.api.jira.input.TransitionInput;
+import fr.mmarie.api.jira.response.TransitionResponse;
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class JiraServiceTest {
 
@@ -28,7 +30,8 @@ public class JiraServiceTest {
     public JiraConfiguration jiraConfiguration = new JiraConfiguration("username",
             "password",
             String.format("http://localhost:%d", PORT),
-            ImmutableList.of(new TransitionConfiguration("Close", ImmutableList.of("close", "fix"))));
+            ImmutableList.of(new TransitionConfiguration("Close", ImmutableList.of("close", "fix")),
+                    new TransitionConfiguration("Start Progress", ImmutableList.of("starts", "starting"))));
 
     public JiraService jiraService;
 
@@ -169,6 +172,36 @@ public class JiraServiceTest {
         TransitionInput transitionInput = transitionInputArgumentCaptor.getValue();
 
         assertThat(transitionInput.getTransition()).isEqualTo(transition);
+        assertThat(transitionInput.getUpdate().getComments().size()).isEqualTo(1);
+
+        assertThat(transitionInput.getUpdate().getComments().get(0).getComment())
+                .isEqualTo(new Comment("Hello " + transitionName));
+    }
+
+    @Test
+    public void performTransitionWithMultipleTransitions() throws Exception {
+        jiraService = spy(jiraService);
+
+        ArgumentCaptor<TransitionInput> transitionInputArgumentCaptor = ArgumentCaptor.forClass(TransitionInput.class);
+
+        String issue = "TESGITLAB-1";
+        Transition startProgressTransition = new Transition(2L, "Start Progress");
+        Transition closeTransition = new Transition(1L, "Close");
+        doReturn(new TransitionResponse(ImmutableList.of(closeTransition, startProgressTransition)))
+                .when(jiraService).getTransitionsOfIssue(issue);
+        String message = "dummy starts #" + issue;
+
+        String transitionName = "Start Progress";
+        doReturn(Optional.of(transitionName)).when(jiraService).extractMatchingTransitionsFromMessage(message, issue);
+
+        jiraService.performTransition(message, issue, "Hello " + JiraService.TRANSITION_HOLDER);
+
+        verify(jiraService, times(1)).extractMatchingTransitionsFromMessage(message, issue);
+        verify(jiraService, times(1)).transitionOnIssue(eq(issue), transitionInputArgumentCaptor.capture());
+
+        TransitionInput transitionInput = transitionInputArgumentCaptor.getValue();
+
+        assertThat(transitionInput.getTransition()).isEqualTo(startProgressTransition);
         assertThat(transitionInput.getUpdate().getComments().size()).isEqualTo(1);
 
         assertThat(transitionInput.getUpdate().getComments().get(0).getComment())
