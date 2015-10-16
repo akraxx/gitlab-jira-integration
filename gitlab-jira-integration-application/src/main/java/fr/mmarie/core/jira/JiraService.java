@@ -81,35 +81,30 @@ public class JiraService {
         return jiraEndPoints.getTransitionsOfIssue(issue).toBlocking().firstOrDefault(null);
     }
 
-    public void transitionOnIssue(String issue, TransitionInput transitionInput) {
-        jiraEndPoints.transitionsOnIssue(issue, transitionInput).enqueue(new Callback<Void>() {
+    public boolean transitionOnIssue(String issue, TransitionInput transitionInput) {
+        try {
+            Response<Void> response = jiraEndPoints.transitionsOnIssue(issue, transitionInput).execute();
+            if(response.isSuccess()) {
+                log.info("Transition {} has been made on {}", transitionInput, issue);
+                return true;
+            } else {
+                log.error("Bad response received <" + response.code() + ">, "
+                                + "unable to make the transition <{}> on <{}>, received message : " + response.message(),
+                        issue,
+                        transitionInput);
 
-            @Override
-            public void onResponse(Response<Void> response, Retrofit retrofit) {
-                int code = response.code();
-                if(code == 204) {
-                    log.info("Transition {} has been made on {}", transitionInput, issue);
-                } else {
-                    log.error("Bad response received <" + code + ">, "
-                                    + "unable to make the transition <{}> on <{}>, received message : " + response.message(),
-                            issue,
-                            transitionInput);
-
-                    try {
-                        log.error("Response body received : {}",
-                                response.errorBody().string());
-                    } catch (IOException e) {
-                        log.error("Unable to read response body", e);
-                    }
+                try {
+                    log.error("Response body received : {}",
+                            response.errorBody().string());
+                } catch (IOException e) {
+                    log.error("Unable to read response body", e);
                 }
             }
+        } catch (IOException e) {
+            log.error("Unable to perform transition <{}> on <{}>", transitionInput, issue);
+        }
 
-            @Override
-            public void onFailure(Throwable throwable) {
-                log.error("Impossible to make transition on {] with transition {}",
-                        issue, transitionInput, throwable);
-            }
-        });
+        return false;
     }
 
     public Response<Map<String, Object>> serverInfo() throws IOException {
@@ -178,7 +173,7 @@ public class JiraService {
         return Optional.empty();
     }
 
-    public void performTransition(String message, String issue, String comment) {
+    public boolean performTransition(String message, String issue, String comment) {
         Optional<String> optionalTransitionName = extractMatchingTransitionsFromMessage(message, issue);
 
         if(optionalTransitionName.isPresent()) {
@@ -195,13 +190,15 @@ public class JiraService {
                         optionalTransition.get()
                 );
 
-                transitionOnIssue(issue, transitionInput);
+                return transitionOnIssue(issue, transitionInput);
             } else {
                 log.warn("Transaction <{}> does not exists, issue <{}> can not be edited",
                         transitionName,
                         issue);
             }
         }
+
+        return false;
     }
 
     public boolean isExistingIssue(String issue) {

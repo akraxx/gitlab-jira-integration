@@ -77,14 +77,15 @@ public class IntegrationService {
                 if(!jiraService.isIssueAlreadyCommented(issue, commit.getId())) {
                     try {
                         log.info("Comment issue <{}> for commit <{}>", issue, commit);
-                        jiraService.commentIssue(issue,
-                                new Comment(buildComment(user,
-                                        repositoryName,
-                                        commit)));
-                        jiraService.performTransition(commit.getMessage(), issue,
+                        if(!jiraService.performTransition(commit.getMessage(), issue,
                                 buildCommentForTransition(user,
                                         repositoryName,
-                                        commit));
+                                        commit))) {
+                            jiraService.commentIssue(issue,
+                                    new Comment(buildComment(user,
+                                            repositoryName,
+                                            commit)));
+                        }
                     } catch (IOException e) {
                         log.error("Unable to comment issue <{}>", issue, e);
                     }
