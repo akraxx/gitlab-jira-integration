@@ -22,8 +22,6 @@ import java.util.Date;
 @Slf4j
 public class HookResource {
 
-    public static final String MDC_KEY_HOOK_ID = "hookId";
-
     public static final String GITLAB_HEADER = "X-Gitlab-Event";
 
     private final IntegrationService service;
@@ -47,9 +45,10 @@ public class HookResource {
             setThreadName(principal);
             metricRegistry.counter(principal.getName()).inc();
 
-            log.info("Push hook received > {}", event);
+            log.info("Hook received > {}", event);
             switch (event.getType()) {
                 case PUSH:
+                case TAG_PUSH:
                     service.performPushEvent(event);
                     break;
             }
@@ -62,7 +61,7 @@ public class HookResource {
                 new Date().getTime());
         Thread.currentThread().setName(requestId);
 
-        log.info("initMDC(): initialized new requestId <{}>", requestId);
+        log.info("setThreadName(): initialized new requestId <{}>", requestId);
     }
 
 }
