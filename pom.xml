@@ -276,6 +276,11 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <parallelOptimized>false</parallelOptimized>
+                            <parallelTestsTimeoutInSeconds>10</parallelTestsTimeoutInSeconds>
+                            <parallelTestsTimeoutForcedInSeconds>10</parallelTestsTimeoutForcedInSeconds>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

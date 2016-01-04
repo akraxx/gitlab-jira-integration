@@ -1,5 +1,5 @@
 language: java
-script: mvn jacoco:prepare-agent install
+script: travis_retry mvn jacoco:prepare-agent install
 jdk:
   - oraclejdk8
 after_success:
