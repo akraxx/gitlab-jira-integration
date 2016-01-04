@@ -82,7 +82,7 @@ Since version **0.5.0** it's possible to perfom transition on JIRA issues (ie Cl
 
 To do that, you need to add this part to your configuration :
 
-```
+``` yaml
 jira:
   # Username, pwd...
   transitions:
